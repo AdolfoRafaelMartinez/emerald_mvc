@@ -1,20 +1,13 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
 
   h1 #{title}
   
   // The form tag directs data to the controller's post action
-  form(action='/user/submit', method='POST')
+  form(action='/users/submit', method='POST')
     div.form-group
-      label(for='name') Name:
-      input#name(type='text', name='name', value='user.name', placeholder='John Doe', required)
-      
-    div.form-group
-      label(for='email') Email:
-      input#email(type='email', name='email', value='user.email', placeholder='test@example.com', required)
+      input#name(type='text', name='question', placeholder='question goes here', required)
       
     div.form-group
       button(type='submit') Submit
