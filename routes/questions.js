@@ -154,12 +154,12 @@ router.post('/', async function(req, res, next) {
   // Ask some questions
   const questions = ["What do some characters look like?"];
 
-  for (const question of questions) {
-    console.log("\n" + "-".repeat(40));
-    const answer = await getAnswer(question);
-    console.log(`💡 Answer: ${answer}`);
-  }
-  res.render('answer', { answer: 'ta da!' });
+  // for (const question of questions) {
+  //   console.log("\n" + "-".repeat(40));
+    const answer = await getAnswer(req.body.question);
+  //   console.log(`💡 Answer: ${answer}`);
+  // }
+  res.render('answer', { answer: answer });
 });
 
 export default router; 
