@@ -42,22 +42,15 @@ async function getAnswer(question) {
         similarity: similarity,
       };
     });
-
-    // Step 4: Get top 3 most relevant chunks
     const topChunks = similarities
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, 3);
-
     console.log("🔍 Most relevant chunks found:");
     topChunks.forEach((chunk, i) => {
       console.log(`  ${i + 1}. Similarity: ${chunk.similarity.toFixed(3)}`);
     });
-
-    // Step 5: Create context from top chunks
     const context = topChunks.map((chunk) => chunk.text).join("\n\n");
-
-    // Step 6: Generate answer using context
-    const prompt = `Based on this context from the document, answer the question:
+    const prompt = `Based on this context from the document, answer the question as though I am 10 years old:
 
 Context:
 ${context}
@@ -81,7 +74,7 @@ Answer:`;
 
 async function createEmbeddings() {
   try {
-    const pdfBuffer = fs.readFileSync("./DnD_BasicRules_2018.pdf");
+    const pdfBuffer = fs.readFileSync("./games/dnd/DnD_BasicRules_2018.pdf");
     const pdfData = await pdf(pdfBuffer);
     console.log(`📄 Extracted ${pdfData.text.length} characters from PDF`);
     const chunks = [];
@@ -120,6 +113,7 @@ router.post('/', async function(req, res, next) {
   }
 
   const answer = await getAnswer(question);
+  console.log(`🤗 Answer: ${answer}`);
   res.render('answer', { answer: answer });
 });
 
