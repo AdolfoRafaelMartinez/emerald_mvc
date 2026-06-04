@@ -1,10 +1,10 @@
 import fs from "fs";
 import pdf from "pdf-parse-debugging-disabled";
-
 import dotenv from "dotenv";
 import express from 'express';
-var router = express.Router();
 import { GoogleGenAI } from "@google/genai";
+
+var router = express.Router();
 
 dotenv.config();
 
@@ -16,38 +16,27 @@ const ai = new GoogleGenAI({
 
 async function getAnswer(question) {
   console.log(`🤔 Question: ${question}`);
-
   try {
-    // Step 1: Load embeddings
     if (!fs.existsSync("embeddings.json")) {
       return "❌ No embeddings found! Please run createEmbeddings() first.";
     }
-
     const embeddings = JSON.parse(fs.readFileSync("embeddings.json", "utf8"));
     console.log(`📚 Loaded ${embeddings.length} embeddings`);
-
-    // Step 2: Get embedding for the question
     const questionResponse = await ai.models.embedContent({
       model: "text-embedding-004",
       contents: question,
     });
     const questionEmbedding = questionResponse.embeddings[0].values;
-
-    // Step 3: Find most similar chunks
     const similarities = embeddings.map((item) => {
-      // Calculate cosine similarity
       let dotProduct = 0;
       let normA = 0;
       let normB = 0;
-
       for (let i = 0; i < questionEmbedding.length; i++) {
         dotProduct += questionEmbedding[i] * item.embedding[i];
         normA += questionEmbedding[i] * questionEmbedding[i];
         normB += item.embedding[i] * item.embedding[i];
       }
-
       const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-
       return {
         text: item.text,
         similarity: similarity,
@@ -91,57 +80,38 @@ Answer:`;
 }
 
 async function createEmbeddings() {
-  console.log("🚀 Creating embeddings from PDF...");
-
-  // try {
-    // Step 1: Read PDF
-    // const pdfBuffer = fs.readFileSync("../public/games/dnd/DnD_BasicRules_2018.pdf");
+  try {
     const pdfBuffer = fs.readFileSync("./DnD_BasicRules_2018.pdf");
     const pdfData = await pdf(pdfBuffer);
     console.log(`📄 Extracted ${pdfData.text.length} characters from PDF`);
-
-    // Step 2: Split text into chunks
     const chunks = [];
     const chunkSize = 1000;
     for (let i = 0; i < pdfData.text.length; i += chunkSize) {
       chunks.push(pdfData.text.slice(i, i + chunkSize));
     }
     console.log(`📝 Created ${chunks.length} text chunks`);
-
-    // Step 3: Generate embeddings for each chunk
     const embeddings = [];
     for (let i = 0; i < chunks.length; i++) {
       console.log(`🔄 Processing chunk ${i + 1}/${chunks.length}`);
-
       const response = await ai.models.embedContent({
         model: "text-embedding-004",
         contents: chunks[i],
       });
-
       embeddings.push({
         text: chunks[i],
         embedding: response.embeddings[0].values,
       });
-
-      // Small delay to avoid rate limits
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
-
-    // Step 4: Save embeddings to file
     fs.writeFileSync("embeddings.json", JSON.stringify(embeddings, null, 2));
     console.log("✅ Embeddings created and saved to embeddings.json");
-  // } catch (error) {
-  //   console.error("❌ Error creating embeddings:", error.message);
-  // }
+  } catch (error) {
+    console.error("❌ Error creating embeddings:", error.message);
+  }
 }
 
-/* GET users listing. */
 router.post('/', async function(req, res, next) {
-  console.log("=" * 50);
-  console.log("🎯 RAG DEMO - Two Simple Functions");
-  console.log("=" * 50);
-
-  // Check if embeddings exist
+  const question = req.body.question;
   if (!fs.existsSync("embeddings.json")) {
     console.log("\n1️⃣ First time setup - Creating embeddings...");
     await createEmbeddings();
@@ -149,16 +119,7 @@ router.post('/', async function(req, res, next) {
     console.log("\n✅ Embeddings already exist, skipping creation");
   }
 
-  console.log("\n2️⃣ Now asking questions...");
-
-  // Ask some questions
-  const questions = ["What do some characters look like?"];
-
-  // for (const question of questions) {
-  //   console.log("\n" + "-".repeat(40));
-    const answer = await getAnswer(req.body.question);
-  //   console.log(`💡 Answer: ${answer}`);
-  // }
+  const answer = await getAnswer(question);
   res.render('answer', { answer: answer });
 });
 
