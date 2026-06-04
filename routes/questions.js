@@ -1,9 +1,12 @@
 import fs from "fs";
 import pdf from "pdf-parse-debugging-disabled";
 
+import dotenv from "dotenv";
 import express from 'express';
 var router = express.Router();
 import { GoogleGenAI } from "@google/genai";
+
+dotenv.config();
 
 const ai = new GoogleGenAI({
   vertexai: true,
