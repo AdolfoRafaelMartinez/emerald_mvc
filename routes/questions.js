@@ -1,6 +1,15 @@
 import fs from "fs";
+import pdf from "pdf-parse-debugging-disabled";
+
 import express from 'express';
 var router = express.Router();
+import { GoogleGenAI } from "@google/genai";
+
+const ai = new GoogleGenAI({
+  vertexai: true,
+  project: process.env.GOOGLE_CLOUD_PROJECT,
+  location: process.env.GOOGLE_CLOUD_LOCATION,
+});
 
 async function getAnswer(question) {
   console.log(`🤔 Question: ${question}`);
@@ -81,8 +90,9 @@ Answer:`;
 async function createEmbeddings() {
   console.log("🚀 Creating embeddings from PDF...");
 
-  try {
+  // try {
     // Step 1: Read PDF
+    // const pdfBuffer = fs.readFileSync("../public/games/dnd/DnD_BasicRules_2018.pdf");
     const pdfBuffer = fs.readFileSync("./DnD_BasicRules_2018.pdf");
     const pdfData = await pdf(pdfBuffer);
     console.log(`📄 Extracted ${pdfData.text.length} characters from PDF`);
@@ -117,9 +127,9 @@ async function createEmbeddings() {
     // Step 4: Save embeddings to file
     fs.writeFileSync("embeddings.json", JSON.stringify(embeddings, null, 2));
     console.log("✅ Embeddings created and saved to embeddings.json");
-  } catch (error) {
-    console.error("❌ Error creating embeddings:", error.message);
-  }
+  // } catch (error) {
+  //   console.error("❌ Error creating embeddings:", error.message);
+  // }
 }
 
 /* GET users listing. */
