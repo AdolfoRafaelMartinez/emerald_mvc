@@ -17,10 +17,10 @@ const ai = new GoogleGenAI({
 async function getAnswer(question) {
   console.log(`🤔 Question: ${question}`);
   try {
-    if (!fs.existsSync("embeddings.json")) {
+    if (!fs.existsSync("./games/clue/embeddings.json")) {
       return "❌ No embeddings found! Please run createEmbeddings() first.";
     }
-    const embeddings = JSON.parse(fs.readFileSync("embeddings.json", "utf8"));
+    const embeddings = JSON.parse(fs.readFileSync("./games/clue/embeddings.json", "utf8"));
     console.log(`📚 Loaded ${embeddings.length} embeddings`);
     const questionResponse = await ai.models.embedContent({
       model: "text-embedding-004",
@@ -74,13 +74,12 @@ Answer:`;
 
 async function createEmbeddings() {
   try {
-    const pdfBuffer = fs.readFileSync("./games/dnd/DnD_BasicRules_2018.pdf");
-    const pdfData = await pdf(pdfBuffer);
-    console.log(`📄 Extracted ${pdfData.text.length} characters from PDF`);
+    const text_data = fs.readFileSync('./games/clue/clue.txt', 'utf8');
+    console.log(`📄 Extracted ${text_data.length} characters from text file`);
     const chunks = [];
     const chunkSize = 1000;
-    for (let i = 0; i < pdfData.text.length; i += chunkSize) {
-      chunks.push(pdfData.text.slice(i, i + chunkSize));
+    for (let i = 0; i < text_data.length; i += chunkSize) {
+      chunks.push(text_data.slice(i, i + chunkSize));
     }
     console.log(`📝 Created ${chunks.length} text chunks`);
     const embeddings = [];
@@ -96,7 +95,7 @@ async function createEmbeddings() {
       });
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
-    fs.writeFileSync("embeddings.json", JSON.stringify(embeddings, null, 2));
+    fs.writeFileSync("./games/clue/embeddings.json", JSON.stringify(embeddings, null, 2));
     console.log("✅ Embeddings created and saved to embeddings.json");
   } catch (error) {
     console.error("❌ Error creating embeddings:", error.message);
@@ -105,7 +104,7 @@ async function createEmbeddings() {
 
 router.post('/', async function(req, res, next) {
   const question = req.body.question;
-  if (!fs.existsSync("embeddings.json")) {
+  if (!fs.existsSync("./games/clue/embeddings.json")) {
     console.log("\n1️⃣ First time setup - Creating embeddings...");
     await createEmbeddings();
   } else {

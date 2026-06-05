@@ -2,11 +2,11 @@ extends layout
 
 block content
 
-  h1 Question
+  h2 Question
   
   form(action='/questions', method='POST')
     div.form-group
-      input#name(type='text', name='question', placeholder='question goes here', required)
-      
+      input#name(type='text', name='question', placeholder='type here', required)
+    p
     div.form-group
       button(type='submit') Submit
