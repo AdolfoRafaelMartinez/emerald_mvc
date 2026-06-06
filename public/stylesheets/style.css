@@ -5,6 +5,7 @@
 :root {
   --bg-primary: #040a07;
   --bg-gradient: linear-gradient(135deg, #0b1f16 0%, #030806 100%);
+  --bg-image: url('/images/tavern_background.png');
   --color-emerald-glow: #10b981;
   --color-emerald-dark: #064e3b;
   --color-emerald-light: #34d399;
@@ -35,7 +36,10 @@
 
 body {
   background: var(--bg-primary);
-  background-image: var(--bg-gradient);
+  background-image: linear-gradient(rgba(4, 10, 7, 0.82), rgba(4, 10, 7, 0.9)), var(--bg-image);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-body);
