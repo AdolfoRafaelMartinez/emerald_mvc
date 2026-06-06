@@ -1,6 +1,15 @@
 extends layout
 
 block content
-
-  h1 Answer
-  p #{answer}
+  .parchment-container
+    .answer-header
+      span 📜 Coach's Wisdom on #{game.name}
+    .question-box
+      strong Question:
+      span  "#{question}"
+    .answer-body
+      != answerHtml
+      
+    .actions-row
+      a.btn.btn-emerald(href='/game/' + game.id) Ask Another Question
+      a.btn.btn-secondary(href='/') Back to Tavern

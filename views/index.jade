@@ -1,12 +1,13 @@
 extends layout
 
 block content
-
-  h2 Question
-  
-  form(action='/questions', method='POST')
-    div.form-group
-      input#name(type='text', name='question', placeholder='type here', required)
-    p
-    div.form-group
-      button(type='submit') Submit
+  .game-grid
+    each game in games
+      a.game-card(href='/game/' + game.id)
+        .game-image-container
+          img(src=game.image || '/images/default.png', alt=game.name)
+        .game-details
+          .game-name= game.name
+          .game-description= game.description
+          .game-action
+            span Consult Coach &rarr;

@@ -1,0 +1,39 @@
+import fs from 'fs';
+import path from 'path';
+
+export const GAME_METADATA = {
+  clue: {
+    id: "clue",
+    name: "Clue",
+    description: "A classic detective mystery board game. Find out who did it, where, and with what weapon.",
+    image: "/images/clue.png"
+  },
+  dnd: {
+    id: "dnd",
+    name: "Dungeons & Dragons",
+    description: "The world's greatest tabletop roleplaying game. Learn the basic rules, spells, races, and classes.",
+    image: "/images/dnd.png"
+  }
+};
+
+export function getGameInfo(id) {
+  if (GAME_METADATA[id]) {
+    return GAME_METADATA[id];
+  }
+  const name = id.split(/[-_]+/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  return {
+    id: id,
+    name: name,
+    description: `Consult the coach for the rules and strategies of ${name}.`,
+    image: "/images/default.png"
+  };
+}
+
+export function getAvailableGames() {
+  const gamesPath = path.join(process.cwd(), 'games');
+  if (!fs.existsSync(gamesPath)) return [];
+  
+  return fs.readdirSync(gamesPath, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => getGameInfo(dirent.name));
+}

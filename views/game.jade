@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  .glass-card
+    .game-header
+      img.game-header-image(src=game.image || '/images/default.png', alt=game.name)
+      .game-header-info
+        h2= game.name
+        p= game.description
+    
+    form(action='/questions', method='POST', onsubmit='showLoading()')
+      input(type='hidden', name='game', value=game.id)
+      .form-group
+        label(for='question', style='display:block; margin-bottom:10px; font-weight:500; color:#fbbf24; font-family:var(--font-heading);') Ask your question:
+        input#question.input-text(type='text', name='question', placeholder='e.g., What are the rules for...', required, autofocus)
+      .actions-row
+        button.btn.btn-emerald(type='submit') Ask the Coach
+        a.btn.btn-secondary(href='/') Back to Tavern
+        
+  #loading.loading-overlay
+    .loading-spinner
+    .loading-text Consulting the Codex...
+    .loading-subtext Reading the rules of #{game.name} and generating the master's response. First-time setup may take up to 10 seconds.
+
+  script.
+    function showLoading() {
+      document.getElementById('loading').style.display = 'flex';
+    }
