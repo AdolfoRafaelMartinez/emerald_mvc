@@ -117,7 +117,12 @@ async function getAnswer(game, question) {
     const prompt = `You are a knowledgeable and friendly tabletop game master at the Emerald Tavern.
 Based on the following rulebook context for the game "${gameInfo.name}", answer the user's question.
 If the answer is not in the context, use your general knowledge of the game to answer, but indicate that this is general knowledge.
-Keep the explanation clear and friendly (as if explaining to a 10-year-old or casual player, but keeping the rule details accurate).
+
+CRITICAL INSTRUCTIONS FOR RESPONSE STYLE:
+- Keep the response extremely brief, simple, and direct. Avoid wordy rule explanations.
+- Structure your answer to present the clear, immediate CHOICES or OPTIONS the player has at that specific moment in their turn.
+- Use a simple bulleted list of options when possible (e.g., "On your turn, you can choose to:").
+- Use clear, plain language (as if explaining to a casual player).
 
 Context from the rulebook:
 ${context}
