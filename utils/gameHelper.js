@@ -13,6 +13,12 @@ export const GAME_METADATA = {
     name: "Dungeons & Dragons",
     description: "The world's greatest tabletop roleplaying game. Learn the basic rules, spells, races, and classes.",
     image: "/images/dnd.png"
+  },
+  tictactoe: {
+    id: "tictactoe",
+    name: "Tic-Tac-Toe",
+    description: "A simple, classic two-player alignment game played on a 3x3 grid. Get three in a row to win!",
+    image: "/images/tictactoe.png"
   }
 };
 

@@ -1,0 +1,55 @@
+This game is called "Tic-Tac-Toe: Runes of Eldoria".
+
+OVERVIEW & MYTHOLOGY
+In the mystical chambers of the Emerald Tavern, travelers play "Tic-Tac-Toe: Runes of Eldoria" to resolve disputes, test their wits, and seek the favor of the tavern's game masters. It is an ancient, fast-paced two-player alignment game played on a simple 3x3 stone grid. Players take turns carving their ancient runes into the grid, seeking to align three of their runes in a row before their opponent does.
+
+THE GAME PIECES & SYMBOLS
+1. The Emerald Rune of Light (represented by the symbol 'X'): Typically used by Player 1, who takes the first turn of the game.
+2. The Golden Rune of Flame (represented by the symbol 'O'): Used by Player 2, who takes the second turn.
+3. The Runestone Board: A 3x3 square grid consisting of exactly nine empty cells.
+
+SET-UP
+1. Place the empty 3x3 Runestone Board in the center of the table.
+2. Player 1 takes the Emerald Runes (X).
+3. Player 2 takes the Golden Runes (O).
+4. Decide who goes first. By tradition, the Emerald Rune (X) player starts the first game. In subsequent games, players may alternate who goes first, or the loser of the previous match starts first.
+
+GAMEPLAY RULES
+1. The game begins with an entirely empty 3x3 grid.
+2. Players take turns placing one of their runes (X or O) in any empty cell on the board.
+3. Once a rune is placed on the board, it is locked in place. It cannot be moved, removed, or replaced by another rune for the rest of the game.
+4. Players must make a move on their turn; they cannot skip a turn or pass.
+5. The game continues alternating turns until either one player achieves three runes in a row or the board is completely full.
+
+HOW TO WIN
+To win the game, a player must align three of their runes in a continuous straight line. The alignment can be achieved in three ways:
+1. Horizontally: Claiming all three cells in Row 1, Row 2, or Row 3.
+2. Vertically: Claiming all three cells in Column 1, Column 2, or Column 3.
+3. Diagonally: Claiming the three cells from the top-left corner to the bottom-right corner, or from the top-right corner to the bottom-left corner.
+
+THE DRAW / CAT'S GAME
+If all 9 cells of the board are filled with runes and neither player has successfully aligned three of their runes in a row, the match ends in a draw. In tavern lore, this is known as a "Cat's Game." No player wins, and the runes are wiped clean to begin a new round.
+
+STRATEGY GUIDE & PERFECT PLAY
+Tic-Tac-Toe is a mathematically "solved" game. This means that if both players play optimally (without making any mistakes), the game will always end in a draw. To achieve perfect play, you must prioritize your decisions in this order:
+
+1. WIN: If you have two of your runes in a line (horizontal, vertical, or diagonal) and the third cell is empty, place your rune there to complete the line and win the game.
+2. BLOCK: If your opponent has two of their runes in a line, you must place your rune in the third empty space to block them from winning on their next turn.
+3. FORK: Create a scenario where you have two separate, non-blocked lines containing one of your runes, such that placing a second rune will create two distinct ways for you to win on the following turn. The opponent can only block one, securing your victory.
+4. BLOCK OPPONENT'S FORK: If your opponent can create a fork on their next turn:
+   - Strategy A: Create a two-in-a-row to force your opponent into defending/blocking you, provided that the space they block does not give them a fork.
+   - Strategy B: If there is an immediate spot where the opponent can fork, place your rune in that spot to block the fork directly.
+5. CENTER: Play in the center cell if it is empty. The center cell is the most valuable position on the board because it participates in four potential winning lines (one horizontal, one vertical, and two diagonals).
+6. OPPOSITE CORNER: If your opponent is in a corner and the opposite diagonal corner is empty, place your rune in the opposite corner.
+7. EMPTY CORNER: Place your rune in an empty corner. Corner cells participate in three potential winning lines.
+8. EMPTY SIDE: Place your rune in an empty side/edge cell. Side cells only participate in two potential winning lines.
+
+SPECIFIC TACTICAL OPENINGS
+- Corner Opening (Strongest): If Player 1 opens by playing in a corner, Player 2 MUST play in the center to force a draw. If Player 2 plays in any other cell (a side or another corner), Player 1 can force a win.
+- Center Opening: If Player 1 opens in the center, Player 2 should play in a corner to keep the game balanced. Playing on a side/edge cell allows Player 1 to set up a forced win.
+- Side Opening: If Player 1 opens on a side cell, Player 2 can play in the center, an adjacent corner, or the opposite side to maintain a safe draw.
+
+VARIANTS OF THE GAME
+1. 3D Tic-Tac-Toe: Played on a 4x4x4 grid of cubes, where players attempt to get four in a row in a three-dimensional space.
+2. Ultimate Tic-Tac-Toe: A complex variant consisting of a 9x9 board made of nine separate 3x3 grids. Winning a sub-grid allows you to claim that space in the main grid.
+3. Gomoku: Played on a much larger board (such as 15x15), where players must align five of their stones in a row to win.
