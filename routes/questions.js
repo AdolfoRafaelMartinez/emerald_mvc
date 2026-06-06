@@ -114,7 +114,7 @@ async function getAnswer(game, question) {
     const context = topChunks.map((chunk) => chunk.text).join("\n\n");
     const gameInfo = getGameInfo(game);
     
-    const prompt = `You are a knowledgeable and friendly tabletop game coach at the Emerald Tavern.
+    const prompt = `You are a knowledgeable and friendly tabletop game master at the Emerald Tavern.
 Based on the following rulebook context for the game "${gameInfo.name}", answer the user's question.
 If the answer is not in the context, use your general knowledge of the game to answer, but indicate that this is general knowledge.
 Keep the explanation clear and friendly (as if explaining to a 10-year-old or casual player, but keeping the rule details accurate).

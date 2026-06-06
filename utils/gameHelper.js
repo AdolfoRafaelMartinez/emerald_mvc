@@ -30,7 +30,7 @@ export function getGameInfo(id) {
   return {
     id: id,
     name: name,
-    description: `Consult the coach for the rules and strategies of ${name}.`,
+    description: `Consult the master for the rules and strategies of ${name}.`,
     image: "/images/default.png"
   };
 }
