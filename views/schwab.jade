@@ -1,0 +1,793 @@
+extends layout
+
+block content
+  style.
+    /* Schwab Professional Financial Dashboard Style overrides */
+    :root {
+      --schwab-blue: #0076a8;
+      --schwab-blue-hover: #005a9c;
+      --schwab-bg: #061121;
+      --schwab-card: #0d1e36;
+      --schwab-border: 1px solid rgba(0, 118, 168, 0.3);
+      --schwab-border-hover: 1px solid rgba(0, 118, 168, 0.6);
+      --schwab-green: #22c55e;
+      --schwab-red: #ef4444;
+    }
+    
+    body {
+      background: var(--schwab-bg) !important;
+      background-image: linear-gradient(rgba(6, 17, 33, 0.86), rgba(6, 17, 33, 0.94)), url('/images/schwab_background.png') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      background-attachment: fixed !important;
+    }
+    
+    .catan-container {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    @media (max-width: 768px) {
+      .catan-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .rec-badge {
+      font-size: 0.72rem;
+      background: rgba(0, 164, 228, 0.2);
+      color: #00a4e4;
+      border: 1px solid rgba(0, 164, 228, 0.4);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Header Rebranding */
+    .schwab-header {
+      background: #00253d;
+      border-bottom: 3px solid var(--schwab-blue);
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    
+    .schwab-logo {
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .schwab-logo span {
+      background: var(--schwab-blue);
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    
+    .schwab-logo-sub {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+    }
+    
+    .schwab-card {
+      background: var(--schwab-card);
+      border: var(--schwab-border);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    .schwab-card:hover {
+      border: var(--schwab-border-hover);
+      box-shadow: 0 4px 25px rgba(0, 118, 168, 0.15);
+    }
+    
+    /* Portfolio Balance & Market Info */
+    .balance-display {
+      font-size: 2.2rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      color: #fff;
+      margin: 10px 0;
+    }
+    
+    .change-badge {
+      display: inline-block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+    }
+    
+    .change-badge.positive {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--schwab-green);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    
+    .change-badge.negative {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--schwab-red);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    .market-tag {
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 4px;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+    
+    .market-tag.stable { background: #0076a8; }
+    .market-tag.bear { background: #b91c1c; }
+    .market-tag.bull { background: #15803d; }
+    .market-tag.volatile { background: #a21caf; }
+    
+    /* Financial Table */
+    .financial-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.95rem;
+    }
+    
+    .financial-table th {
+      border-bottom: 2px solid rgba(0, 118, 168, 0.4);
+      color: #94a3b8;
+      text-align: left;
+      padding: 12px 8px;
+      font-weight: 600;
+    }
+    
+    .financial-table td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 15px 8px;
+      color: #fff;
+    }
+    
+    .financial-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Action Buttons override */
+    .schwab-btn-primary {
+      background: var(--schwab-blue);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 14px 24px;
+      font-family: var(--font-body);
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    
+    .schwab-btn-primary:hover {
+      background: var(--schwab-blue-hover);
+    }
+    
+    .choice-group {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    
+    .schwab-choice-btn {
+      background: rgba(0, 118, 168, 0.05);
+      border: 1px solid rgba(0, 118, 168, 0.3);
+      color: #fff;
+      border-radius: 6px;
+      padding: 15px 20px;
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.2s;
+    }
+    
+    .schwab-choice-btn:hover {
+      background: rgba(0, 118, 168, 0.15);
+      border-color: var(--schwab-blue);
+      transform: translateX(4px);
+    }
+    
+    .schwab-choice-btn.selected {
+      background: rgba(0, 118, 168, 0.25);
+      border-color: var(--schwab-blue);
+      box-shadow: 0 0 10px rgba(0, 118, 168, 0.3);
+      font-weight: 600;
+    }
+    
+    /* Math Log Overrides */
+    .schwab-math-log {
+      max-height: 150px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.85rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .math-entry {
+      border-left: 2px solid var(--schwab-blue);
+      padding-left: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .math-entry.header {
+      border-left-color: var(--schwab-green);
+      font-weight: bold;
+      color: #fff;
+    }
+
+  <!-- Header Section -->
+  .schwab-header
+    .schwab-logo
+      span charles
+      | SCHWAB
+    .schwab-logo-sub Wealth Management &amp; Bayesian Risk Advisor
+
+  .catan-container
+    <!-- LEFT: Portfolio Dashboard -->
+    div(style="display:flex; flex-direction:column; gap:30px;")
+      .glass-card.schwab-card
+        .scenario-title(style="display:flex; justify-content:between; align-items:center;")
+          span Dynamic Asset Portfolio
+          span.market-tag.stable#market-ticker Stable Growth
+          
+        .scenario-description(style="margin-bottom: 5px;") Total account valuation and asset balances:
+        .balance-display#total-balance $10,000.00
+        .change-badge.positive#daily-change +$0.00 (+0.0%)
+        
+        table.financial-table
+          thead
+            tr
+              th Asset Tier
+              th Holding Description
+              th Balance ($)
+              th Allocation (%)
+              th Volatility
+          tbody
+            tr
+              td(style="color:#38bdf8; font-weight:600;") Smooth Sailing
+              td Cash &amp; Treasury Bonds
+              td#bal-low $3,333.33
+              td#alloc-low 33.3%
+              td#vol-low(style="color:#22c55e;") +0.8%
+            tr
+              td(style="color:#f59e0b; font-weight:600;") Bumper Cars
+              td S&amp;P 500 Index Funds
+              td#bal-med $3,333.33
+              td#alloc-med 33.3%
+              td#vol-med(style="color:#22c55e;") +2.5%
+            tr
+              td(style="color:#ec4899; font-weight:600;") Thrill Seeker
+              td Aggressive Growth &amp; Crypto
+              td#bal-high $3,333.34
+              td#alloc-high 33.3%
+              td#vol-high(style="color:#22c55e;") +5.0%
+
+      .advisor-bubble(style="background:rgba(0,118,168,0.06); border-left-color:var(--schwab-blue);")
+        strong#advisor-title Schwab Wealth Management Advisor
+        span#advisor-text Welcome to your portfolio dashboard. Please select a target allocation strategy from the choices below. I will monitor your rebalancing choices under different market conditions to build your risk profile and offer tailored financial counsel.
+
+      <!-- Interactive Decision Card -->
+      .glass-card.schwab-card(style="min-height:300px; display:flex; flex-direction:column; justify-content:space-between;")
+        div#schwab-choices-box
+          .scenario-title#step-title Market Cycle 1: Stable Growth
+          .scenario-description#step-desc The market is stable. Review the current asset performance above. Choose a rebalancing target to optimize your portfolio allocation.
+          
+          .choice-group
+            button.schwab-choice-btn#btn-choice-0(onclick="selectAllocation(0)")
+              div(style="display:flex; justify-content:space-between; align-items:center;")
+                strong Smooth Sailing Strategy (Conservative Allocation)
+                span.rec-badge#rec-badge-0(style="display:none;") Profile Match
+              br
+              span.text-muted Target: 70% Low Risk, 20% Medium Risk, 10% High Risk
+            button.schwab-choice-btn#btn-choice-1(onclick="selectAllocation(1)")
+              div(style="display:flex; justify-content:space-between; align-items:center;")
+                strong Bumper Cars Strategy (Moderate Allocation)
+                span.rec-badge#rec-badge-1(style="display:none;") Profile Match
+              br
+              span.text-muted Target: 20% Low Risk, 60% Medium Risk, 20% High Risk
+            button.schwab-choice-btn#btn-choice-2(onclick="selectAllocation(2)")
+              div(style="display:flex; justify-content:space-between; align-items:center;")
+                strong Thrill Seeker Strategy (Aggressive Allocation)
+                span.rec-badge#rec-badge-2(style="display:none;") Profile Match
+              br
+              span.text-muted Target: 10% Low Risk, 15% Medium Risk, 75% High Risk
+
+        div(style="text-align:right; margin-top:20px;")
+          button.schwab-btn-primary#next-turn-btn(onclick="processTurn()", disabled) Apply Rebalance &amp; Run Next Cycle
+          button.schwab-btn-primary#reset-btn(onclick="resetSimulator()", style="display:none;") Run New Simulation
+
+      <!-- Portfolio SVG Chart -->
+      .glass-card.schwab-card
+        .scenario-title Account Performance History
+        .board-wrapper(style="background:rgba(0,0,0,0.3); border-radius:6px; padding:15px;")
+          svg(width="100%", height="110", viewBox="0 0 400 110")
+            <!-- Grid lines -->
+            line(x1="20", y1="10", x2="380", y2="10", stroke="rgba(255,255,255,0.05)", stroke-width="1")
+            line(x1="20", y1="50", x2="380", y2="50", stroke="rgba(255,255,255,0.05)", stroke-width="1")
+            line(x1="20", y1="90", x2="380", y2="90", stroke="rgba(255,255,255,0.05)", stroke-width="1")
+            
+            <!-- Turn labels -->
+            text(x="20", y="105", fill="#64748b", font-size="8", text-anchor="middle") Start
+            text(x="110", y="105", fill="#64748b", font-size="8", text-anchor="middle") Cycle 1
+            text(x="200", y="105", fill="#64748b", font-size="8", text-anchor="middle") Cycle 2
+            text(x="290", y="105", fill="#64748b", font-size="8", text-anchor="middle") Cycle 3
+            text(x="380", y="105", fill="#64748b", font-size="8", text-anchor="middle") Cycle 4
+            
+            <!-- Value Labels on Right -->
+            text(x="395", y="14", fill="#64748b", font-size="7", text-anchor="start") $13K
+            text(x="395", y="54", fill="#64748b", font-size="7", text-anchor="start") $10K
+            text(x="395", y="94", fill="#64748b", font-size="7", text-anchor="start") $7K
+
+            <!-- Line Path -->
+            path#history-line(d="M 20,50 L 110,50 L 200,50 L 290,50 L 380,50", fill="none", stroke="url(#schwab-grad)", stroke-width="2.5")
+            
+            <!-- Point Circles -->
+            circle#pt-0(cx="20", cy="50", r="3.5", fill="#0076a8", stroke="#fff")
+            circle#pt-1(cx="110", cy="50", r="3.5", fill="#0076a8", stroke="#fff", style="display:none;")
+            circle#pt-2(cx="200", cy="50", r="3.5", fill="#0076a8", stroke="#fff", style="display:none;")
+            circle#pt-3(cx="290", cy="50", r="3.5", fill="#0076a8", stroke="#fff", style="display:none;")
+            circle#pt-4(cx="380", cy="50", r="3.5", fill="#0076a8", stroke="#fff", style="display:none;")
+            
+            <!-- Gradient definition -->
+            defs
+              linearGradient#schwab-grad(x1="0%", y1="0%", x2="100%", y2="0%")
+                stop(offset="0%", stop-color="#005a9c")
+                stop(offset="100%", stop-color="#00a4e4")
+
+    <!-- RIGHT: Bayesian Belief Analytics -->
+    .bayesian-panel
+      .glass-card.schwab-card
+        .stat-header
+          span Bayesian Risk Profiler
+          span.formula-badge P(Profile|Choice)
+          
+        .strategy-item
+          .strategy-info
+            span.strategy-name Smooth Sailing (Conservative Profile)
+            span.strategy-percentage#prob-cons 33.3%
+          .bar-bg
+            .bar-fill#bar-cons(style="width: 33.33%")
+            
+        .strategy-item
+          .strategy-info
+            span.strategy-name Bumper Cars (Moderate Profile)
+            span.strategy-percentage#prob-mod 33.3%
+          .bar-bg
+            .bar-fill#bar-mod(style="width: 33.33%")
+            
+        .strategy-item
+          .strategy-info
+            span.strategy-name Thrill Seeker (Aggressive Profile)
+            span.strategy-percentage#prob-aggr 33.3%
+          .bar-bg
+            .bar-fill.gold#bar-aggr(style="width: 33.33%")
+
+      .glass-card.schwab-card
+        .stat-header Bayesian Audit Log
+        .schwab-math-log#math-log-container
+          .math-entry.header Prior risk model initialized.
+          .math-entry P(Conservative) = 0.333 | P(Moderate) = 0.333 | P(Aggressive) = 0.333
+
+  script.
+    // SCENARIOS & MARKET MOVES
+    const MARKET_STATES = [
+      { tag: "stable", text: "Stable Growth", desc: "The market is stable. Review the current asset performance above. Choose a rebalancing target to optimize your portfolio allocation." },
+      { tag: "bear", text: "Bear Market Crash", desc: "A sudden bear market crash has hit Catan! High-risk assets dropped by 24%, while bonds preserved your cash. Choose how to reallocate." },
+      { tag: "bull", text: "Bull Market Rally", desc: "A massive tech-driven bull market rally! Thrill Seeker assets jumped 32% this turn. Choose whether to take profits or ride the wave." },
+      { tag: "volatile", text: "Highly Volatile", desc: "The market is experiencing sharp volatility swings. High-risk assets fell 15% but look unstable. Choose your final portfolio shield." }
+    ];
+
+    const VOLATILITIES = {
+      0: [0.008, 0.025, 0.050],  // Cycle 1: Stable
+      1: [-0.002, -0.060, -0.240], // Cycle 2: Bear Crash
+      2: [0.012, 0.085, 0.320],   // Cycle 3: Bull Rally
+      3: [0.005, -0.015, -0.150]  // Cycle 4: Volatile
+    };
+
+    const STRATEGY_PRESETS = [
+      [0.70, 0.20, 0.10], // Smooth Sailing (Conservative): 70/20/10
+      [0.20, 0.60, 0.20], // Bumper Cars (Moderate): 20/60/20
+      [0.10, 0.15, 0.75]  // Thrill Seeker (Aggressive): 10/15/75
+    ];
+
+    // LIKELIHOOD VALUES: P(Choice | Profile)
+    // Profiles: 0 = Conservative (Smooth Sailing), 1 = Moderate (Bumper Cars), 2 = Aggressive (Thrill Seeker)
+    const LIKELIHOODS = {
+      0: { // Stage 0: Stable
+        0: [0.70, 0.20, 0.10], // Choice 0
+        1: [0.20, 0.70, 0.10], // Choice 1
+        2: [0.10, 0.10, 0.80]  // Choice 2
+      },
+      1: { // Stage 1: Bear Crash
+        0: [0.80, 0.40, 0.10], // Choice 0 (Defend)
+        1: [0.15, 0.50, 0.20], // Choice 1 (Balance)
+        2: [0.05, 0.10, 0.70]  // Choice 2 (Buy the dip!)
+      },
+      2: { // Stage 2: Bull Rally
+        0: [0.60, 0.25, 0.05], // Choice 0 (Profit take)
+        1: [0.30, 0.60, 0.15], // Choice 1 (Stay balanced)
+        2: [0.10, 0.15, 0.80]  // Choice 2 (FOMO / ride wave)
+      },
+      3: { // Stage 3: Volatile
+        0: [0.80, 0.30, 0.10], // Choice 0
+        1: [0.15, 0.60, 0.20], // Choice 1
+        2: [0.05, 0.10, 0.70]  // Choice 2
+      }
+    };
+
+    const ADVISOR_RESPONSES = [
+      // Conservative
+      {
+        title: "Schwab Advisor: Capital Preservation Guidance",
+        text: "Your choices indicate a strong preference for capital preservation and risk management. We suggest maintaining a conservative allocation focusing on Fixed Income (Treasuries and High-Yield Savings) to shield your principal from market drawdowns, with small equity shares to outpace inflation."
+      },
+      // Moderate
+      {
+        title: "Schwab Advisor: Core-Satellite Balanced Guidance",
+        text: "Your rebalancing patterns suggest a balanced risk appetite. We recommend a core-satellite portfolio structure: 60% allocated to diversified global index funds for steady long-term growth, with the remainder in bonds to offset volatility. Rebalance annually to correct for portfolio drift."
+      },
+      // Aggressive
+      {
+        title: "Schwab Advisor: Aggressive Growth Capital Guidance",
+        text: "You demonstrate an aggressive risk profile, buying volatile dips and riding rallies. While this has high growth potential, ensure you keep at least 6 to 12 months of living expenses in low-risk cash reserves. Avoid emotional trading during market drops and use tax-loss harvesting to optimize your net returns."
+      }
+    ];
+
+    // Initial state
+    let totalValue = 10000;
+    let assetValues = [3333.33, 3333.33, 3333.34];
+    let selectedAllocIndex = -1;
+    let turnHistory = [10000];
+    
+    let probabilities = [0.3333, 0.3333, 0.3333];
+    let currentTurn = 0;
+
+    function selectAllocation(index) {
+      selectedAllocIndex = index;
+      
+      // Toggle button active classes
+      for (let i = 0; i < 3; i++) {
+        const btn = document.getElementById(`btn-choice-${i}`);
+        if (i === index) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      }
+      
+      // Enable Next Turn Button
+      document.getElementById('next-turn-btn').removeAttribute('disabled');
+    }
+
+    function processTurn() {
+      if (selectedAllocIndex === -1) return;
+      
+      // 1. Rebalance portfolio to chosen strategy preset first
+      const preset = STRATEGY_PRESETS[selectedAllocIndex];
+      assetValues[0] = totalValue * preset[0];
+      assetValues[1] = totalValue * preset[1];
+      assetValues[2] = totalValue * preset[2];
+
+      // 2. Bayesian Update: Posterior = Likelihood * Prior
+      const choiceLikelihoods = LIKELIHOODS[currentTurn][selectedAllocIndex];
+      const priors = [...probabilities];
+      
+      let posteriors = [0, 0, 0];
+      let numeratorSum = 0;
+      for (let i = 0; i < 3; i++) {
+        posteriors[i] = choiceLikelihoods[i] * priors[i];
+        numeratorSum += posteriors[i];
+      }
+      
+      probabilities = posteriors.map(val => val / numeratorSum);
+      
+      // Log Bayesian calculation
+      logBayesianMath(currentTurn, selectedAllocIndex, priors, choiceLikelihoods, probabilities);
+      
+      // 3. Move to next turn & apply market volatility appreciation/depreciation
+      currentTurn++;
+      
+      if (currentTurn < 4) {
+        // Apply market moves for the *new* turn
+        const vols = VOLATILITIES[currentTurn];
+        let previousTotal = totalValue;
+        
+        assetValues[0] = assetValues[0] * (1 + vols[0]);
+        assetValues[1] = assetValues[1] * (1 + vols[1]);
+        assetValues[2] = assetValues[2] * (1 + vols[2]);
+        
+        totalValue = assetValues[0] + assetValues[1] + assetValues[2];
+        turnHistory.push(totalValue);
+        
+        // Update dashboard UI
+        updateDashboard(vols, previousTotal);
+        updateBeliefUI();
+        
+        // Reset selections
+        selectedAllocIndex = -1;
+        document.getElementById('next-turn-btn').setAttribute('disabled', 'true');
+        for (let i = 0; i < 3; i++) {
+          document.getElementById(`btn-choice-${i}`).classList.remove('selected');
+        }
+        
+        // Update prompt text
+        const state = MARKET_STATES[currentTurn];
+        const ticker = document.getElementById('market-ticker');
+        ticker.className = `market-tag ${state.tag}`;
+        ticker.innerText = state.text;
+        
+        document.getElementById('step-title').innerText = `Market Cycle ${currentTurn + 1}: ${state.text}`;
+        document.getElementById('step-desc').innerText = state.desc;
+        
+      } else {
+        // Simulation Complete
+        updateBeliefUI();
+        showCompleteState();
+      }
+    }
+
+    function updateDashboard(vols, previousTotal) {
+      // Formats
+      document.getElementById('total-balance').innerText = '$' + totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      
+      // Gain/Loss percentage
+      const totalChange = totalValue - previousTotal;
+      const totalChangePct = (totalChange / previousTotal) * 100;
+      const changeBadge = document.getElementById('daily-change');
+      
+      if (totalChange >= 0) {
+        changeBadge.className = 'change-badge positive';
+        changeBadge.innerText = `+$${totalChange.toFixed(2)} (+${totalChangePct.toFixed(2)}%)`;
+      } else {
+        changeBadge.className = 'change-badge negative';
+        changeBadge.innerText = `-$${Math.abs(totalChange).toFixed(2)} (${totalChangePct.toFixed(2)}%)`;
+      }
+      
+      // Update individual row values
+      document.getElementById('bal-low').innerText = '$' + assetValues[0].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('bal-med').innerText = '$' + assetValues[1].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('bal-high').innerText = '$' + assetValues[2].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      
+      document.getElementById('alloc-low').innerText = ((assetValues[0] / totalValue) * 100).toFixed(1) + '%';
+      document.getElementById('alloc-med').innerText = ((assetValues[1] / totalValue) * 100).toFixed(1) + '%';
+      document.getElementById('alloc-high').innerText = ((assetValues[2] / totalValue) * 100).toFixed(1) + '%';
+      
+      // Volatility text
+      updateVolText('vol-low', vols[0]);
+      updateVolText('vol-med', vols[1]);
+      updateVolText('vol-high', vols[2]);
+      
+      // Update SVG line chart path
+      updateSVGChart();
+    }
+
+    function updateVolText(id, vol) {
+      const el = document.getElementById(id);
+      const pct = (vol * 100).toFixed(1);
+      if (vol >= 0) {
+        el.style.color = 'var(--schwab-green)';
+        el.innerText = `+${pct}%`;
+      } else {
+        el.style.color = 'var(--schwab-red)';
+        el.innerText = `${pct}%`;
+      }
+    }
+
+    function updateSVGChart() {
+      // Map portfolio values into y-coordinates from 10 to 90 (where $13,000 = 10 and $7,000 = 90)
+      const mapY = (val) => {
+        const minVal = 7000;
+        const maxVal = 13000;
+        const pct = (val - minVal) / (maxVal - minVal);
+        const y = 90 - (pct * 80);
+        return Math.max(10, Math.min(90, y)); // Clamp between 10 and 90
+      };
+      
+      let dPath = `M 20,${mapY(turnHistory[0])}`;
+      document.getElementById('pt-0').setAttribute('cy', mapY(turnHistory[0]));
+      
+      for (let i = 1; i < turnHistory.length; i++) {
+        const x = 20 + (i * 90);
+        const y = mapY(turnHistory[i]);
+        dPath += ` L ${x},${y}`;
+        
+        const pt = document.getElementById(`pt-${i}`);
+        pt.setAttribute('cy', y);
+        pt.style.display = 'block';
+      }
+      
+      document.getElementById('history-line').setAttribute('d', dPath);
+    }
+
+    function logBayesianMath(turn, choiceIndex, priors, likelihoods, posteriors) {
+      const container = document.getElementById('math-log-container');
+      
+      const strategies = ["Smooth Sailing (Cons)", "Bumper Cars (Mod)", "Thrill Seeker (Aggr)"];
+      const headerEntry = document.createElement('div');
+      headerEntry.className = 'math-entry header';
+      headerEntry.innerText = `Cycle ${turn + 1}: Selected Rebalance to ${strategies[choiceIndex]}`;
+      container.appendChild(headerEntry);
+      
+      const profileNames = ["Conservative", "Moderate", "Aggressive"];
+      for (let i = 0; i < 3; i++) {
+        const entry = document.createElement('div');
+        entry.className = 'math-entry';
+        
+        const priorStr = priors[i].toFixed(4);
+        const likeStr = likelihoods[i].toFixed(4);
+        const postStr = posteriors[i].toFixed(4);
+        
+        entry.innerHTML = `P(Profile<sub>${profileNames[i]}</sub>) = ${priorStr} (Prior)<br>` +
+                          `P(Rebalance | Profile<sub>${profileNames[i]}</sub>) = ${likeStr} (Likelihood)<br>` +
+                          `P(Profile<sub>${profileNames[i]}</sub> | Rebalance) = <strong>${postStr}</strong> (Posterior)`;
+        container.appendChild(entry);
+      }
+      
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function updateBeliefUI() {
+      // Set progress texts
+      document.getElementById('prob-cons').innerText = (probabilities[0] * 100).toFixed(1) + '%';
+      document.getElementById('prob-mod').innerText = (probabilities[1] * 100).toFixed(1) + '%';
+      document.getElementById('prob-aggr').innerText = (probabilities[2] * 100).toFixed(1) + '%';
+      
+      // Adjust progress bars
+      document.getElementById('bar-cons').style.width = (probabilities[0] * 100) + '%';
+      document.getElementById('bar-mod').style.width = (probabilities[1] * 100) + '%';
+      document.getElementById('bar-aggr').style.width = (probabilities[2] * 100) + '%';
+      
+      // Update Advisor response & recommendations
+      let maxIndex = 0;
+      let maxVal = probabilities[0];
+      for (let i = 1; i < 3; i++) {
+        if (probabilities[i] > maxVal) {
+          maxVal = probabilities[i];
+          maxIndex = i;
+        }
+      }
+      
+      // Check if all values are basically equal (tie)
+      const isTie = probabilities[0].toFixed(2) === probabilities[1].toFixed(2) && 
+                    probabilities[1].toFixed(2) === probabilities[2].toFixed(2);
+      
+      // Toggle suggestion badges
+      for (let i = 0; i < 3; i++) {
+        document.getElementById(`rec-badge-${i}`).style.display = (!isTie && i === maxIndex) ? 'inline-block' : 'none';
+      }
+      
+      document.getElementById('advisor-title').innerText = ADVISOR_RESPONSES[maxIndex].title;
+      document.getElementById('advisor-text').innerText = ADVISOR_RESPONSES[maxIndex].text;
+    }
+
+    function showCompleteState() {
+      // Hide choice box
+      document.getElementById('schwab-choices-box').style.display = 'none';
+      document.getElementById('next-turn-btn').style.display = 'none';
+      
+      // Show reset button
+      document.getElementById('reset-btn').style.display = 'inline-block';
+      
+      // Render final completion card
+      const stateCard = document.getElementById('schwab-choices-box').parentElement;
+      
+      const completeBox = document.createElement('div');
+      completeBox.id = 'complete-summary';
+      completeBox.className = 'celebration-box';
+      
+      let maxIndex = 0;
+      for (let i = 1; i < 3; i++) {
+        if (probabilities[i] > probabilities[maxIndex]) {
+          maxIndex = i;
+        }
+      }
+      const finalProfile = maxIndex === 0 ? "Conservative (Smooth Sailing)" : maxIndex === 1 ? "Moderate (Bumper Cars)" : "Aggressive (Thrill Seeker)";
+      const totalGain = totalValue - 10000;
+      const totalGainPct = (totalGain / 10000) * 100;
+      const gainClass = totalGain >= 0 ? 'var(--schwab-green)' : 'var(--schwab-red)';
+      const gainSign = totalGain >= 0 ? '+' : '';
+      
+      completeBox.innerHTML = `
+        <div class="badge-icon">📈</div>
+        <div class="scenario-title">Simulation Complete!</div>
+        <div class="scenario-description">
+          You finished the 4 market cycles with a final portfolio balance of 
+          <strong>$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> 
+          (<span style="color:${gainClass}; font-weight:bold;">${gainSign}$${totalGain.toFixed(2)} [${gainSign}${totalGainPct.toFixed(2)}%]</span>).
+          <br><br>
+          Based on your portfolio management choices under different market conditions, the Schwab Bayesian Risk Profiler has classified you as a:
+          <br><br>
+          <span style="font-size:1.3rem; color:var(--schwab-blue); font-weight:bold;">${finalProfile}</span> Investor
+        </div>
+      `;
+      stateCard.insertBefore(completeBox, document.getElementById('reset-btn').parentElement);
+    }
+
+    function resetSimulator() {
+      totalValue = 10000;
+      assetValues = [3333.33, 3333.33, 3333.34];
+      selectedAllocIndex = -1;
+      turnHistory = [10000];
+      probabilities = [0.3333, 0.3333, 0.3333];
+      currentTurn = 0;
+      
+      // Remove complete summary if exists
+      const summary = document.getElementById('complete-summary');
+      if (summary) summary.remove();
+      
+      // Reset visibility
+      document.getElementById('schwab-choices-box').style.display = 'block';
+      document.getElementById('next-turn-btn').style.display = 'inline-block';
+      document.getElementById('next-turn-btn').setAttribute('disabled', 'true');
+      document.getElementById('reset-btn').style.display = 'none';
+      
+      // Reset choice buttons
+      for (let i = 0; i < 3; i++) {
+        document.getElementById(`btn-choice-${i}`).classList.remove('selected');
+      }
+      
+      // Reset market state
+      const state = MARKET_STATES[0];
+      const ticker = document.getElementById('market-ticker');
+      ticker.className = `market-tag ${state.tag}`;
+      ticker.innerText = state.text;
+      
+      document.getElementById('step-title').innerText = `Market Cycle 1: ${state.text}`;
+      document.getElementById('step-desc').innerText = state.desc;
+      
+      // Clear logs
+      const container = document.getElementById('math-log-container');
+      container.innerHTML = `
+        <div class="math-entry header">Prior risk model initialized.</div>
+        <div class="math-entry">P(Conservative) = 0.333 | P(Moderate) = 0.333 | P(Aggressive) = 0.333</div>
+      `;
+      
+      // Reset Advisor
+      document.getElementById('advisor-title').innerText = "Schwab Wealth Management Advisor";
+      document.getElementById('advisor-text').innerText = "Welcome to your portfolio dashboard. Please select a target allocation strategy from the choices below. I will monitor your rebalancing choices under different market conditions to build your risk profile and offer tailored financial counsel.";
+      
+      // Hide all badges
+      for (let i = 0; i < 3; i++) {
+        document.getElementById(`rec-badge-${i}`).style.display = 'none';
+      }
+      
+      // Reset points visibility
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`pt-${i}`).style.display = 'none';
+      }
+      
+      updateDashboard(VOLATILITIES[0], 10000);
+      updateBeliefUI();
+    }

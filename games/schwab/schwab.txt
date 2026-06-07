@@ -1,0 +1,40 @@
+This game is called "Schwab Portfolio Advisor".
+
+OVERVIEW & OBJECTIVE
+The Schwab Portfolio Advisor is an interactive wealth management simulator. The objective is to manage a dynamic portfolio of assets across four turns (each representing a different market condition) to maximize returns while maintaining a risk profile that aligns with your financial goals. 
+
+The AI Wealth Advisor uses Bayesian learning to analyze your portfolio rebalancing choices in real-time. By observing whether you shift to defensive assets during a crash or double down on volatile assets during a rally, the advisor infers your true investor risk profile and provides custom financial counsel.
+
+INVESTMENT RISK CLASSIFICATIONS
+The simulator groups investments into three distinct risk tiers:
+
+1. SMOOTH SAILING (LOW RISK)
+   - Asset Type: Short-term Treasury Bills, High-Yield Savings, Municipal Bonds.
+   - Characteristics: Low volatility, principal preservation, steady but minimal gains/losses.
+   - Allocation Priority: Defending capital and generating fixed income.
+   - Behavior: Volatility range between -1% and +2%.
+
+2. BUMPER CARS (MEDIUM RISK)
+   - Asset Type: Blue-Chip Large-Cap Equities, Broad Market Index Funds (S&P 500), Balanced Mutual Funds.
+   - Characteristics: Moderate volatility, steady long-term growth with moderate short-term fluctuations.
+   - Allocation Priority: Balanced capital growth and inflation protection.
+   - Behavior: Volatility range between -5% and +8%.
+
+3. THRILL SEEKER (HIGH RISK)
+   - Asset Type: Speculative Tech Stocks, Emerging Market Equities, Cryptocurrencies, Commodity Futures.
+   - Characteristics: High volatility, potential for exponential returns alongside substantial drawdowns.
+   - Allocation Priority: Aggressive wealth accumulation.
+   - Behavior: Volatility range between -20% and +30%.
+
+PORTFOLIO REBALANCING STRATEGIES
+On each turn, you can choose to rebalance your holdings into one of three preset target allocation strategies:
+- Smooth Sailing Allocation: 70% Low Risk, 20% Medium Risk, 10% High Risk.
+- Bumper Cars Allocation: 20% Low Risk, 60% Medium Risk, 20% High Risk.
+- Thrill Seeker Allocation: 10% Low Risk, 15% Medium Risk, 75% High Risk.
+
+BAYESIAN RISK PROFILE INFERENCE
+The Bayesian Advisor tracks your rebalancing decisions (the "evidence") given the current market condition (stable, bear market crash, bull market rally, highly volatile) to update its probability distribution over your true investor profile:
+- Prior P(Profile): Your starting risk categorization (defaults to equal 33.3% distribution).
+- Likelihood P(Choice | Profile): The probability that a Conservative, Moderate, or Aggressive investor would select a given rebalancing allocation under the current market scenario. For instance:
+  - During a Bear Market Crash: A "Smooth Sailing" investor is highly likely to choose a Conservative rebalance to lock in capital, whereas a "Thrill Seeker" investor is likely to choose an Aggressive rebalance to buy high-risk assets at a steep discount.
+- Posterior P(Profile | Choice): The calculated probability of your risk category after observing your choice.
