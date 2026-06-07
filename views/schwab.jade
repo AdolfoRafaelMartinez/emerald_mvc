@@ -173,6 +173,25 @@ block content
       border-bottom: none;
     }
     
+    .financial-table tbody tr {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+    
+    .financial-table tbody tr:hover {
+      background: rgba(0, 118, 168, 0.1);
+    }
+    
+    .financial-table tbody tr.selected {
+      background: rgba(0, 118, 168, 0.2);
+      border-left-color: var(--schwab-blue);
+    }
+    
+    .financial-table tbody tr.recommended {
+      border-left-color: var(--schwab-green);
+    }
+    
     /* Action Buttons override */
     .schwab-btn-primary {
       background: var(--schwab-blue);
@@ -275,19 +294,19 @@ block content
               th Allocation (%)
               th Volatility
           tbody
-            tr
+            tr#row-choice-0(onclick="selectAllocation(0)")
               td(style="color:#38bdf8; font-weight:600;") Smooth Sailing
               td Cash &amp; Treasury Bonds
               td#bal-low $3,333.33
               td#alloc-low 33.3%
               td#vol-low(style="color:#22c55e;") +0.8%
-            tr
+            tr#row-choice-1(onclick="selectAllocation(1)")
               td(style="color:#f59e0b; font-weight:600;") Bumper Cars
               td S&amp;P 500 Index Funds
               td#bal-med $3,333.33
               td#alloc-med 33.3%
               td#vol-med(style="color:#22c55e;") +2.5%
-            tr
+            tr#row-choice-2(onclick="selectAllocation(2)")
               td(style="color:#ec4899; font-weight:600;") Thrill Seeker
               td Aggressive Growth &amp; Crypto
               td#bal-high $3,333.34
@@ -477,13 +496,16 @@ block content
     function selectAllocation(index) {
       selectedAllocIndex = index;
       
-      // Toggle button active classes
+      // Toggle button and row active classes
       for (let i = 0; i < 3; i++) {
         const btn = document.getElementById(`btn-choice-${i}`);
+        const row = document.getElementById(`row-choice-${i}`);
         if (i === index) {
-          btn.classList.add('selected');
+          if (btn) btn.classList.add('selected');
+          if (row) row.classList.add('selected');
         } else {
-          btn.classList.remove('selected');
+          if (btn) btn.classList.remove('selected');
+          if (row) row.classList.remove('selected');
         }
       }
       
@@ -683,9 +705,19 @@ block content
       const isTie = probabilities[0].toFixed(2) === probabilities[1].toFixed(2) && 
                     probabilities[1].toFixed(2) === probabilities[2].toFixed(2);
       
-      // Toggle suggestion badges
+      // Toggle suggestion badges and row recommended borders
       for (let i = 0; i < 3; i++) {
-        document.getElementById(`rec-badge-${i}`).style.display = (!isTie && i === maxIndex) ? 'inline-block' : 'none';
+        const hasMatch = (!isTie && i === maxIndex);
+        document.getElementById(`rec-badge-${i}`).style.display = hasMatch ? 'inline-block' : 'none';
+        
+        const row = document.getElementById(`row-choice-${i}`);
+        if (row) {
+          if (hasMatch) {
+            row.classList.add('recommended');
+          } else {
+            row.classList.remove('recommended');
+          }
+        }
       }
       
       document.getElementById('advisor-title').innerText = ADVISOR_RESPONSES[maxIndex].title;
@@ -753,9 +785,14 @@ block content
       document.getElementById('next-turn-btn').setAttribute('disabled', 'true');
       document.getElementById('reset-btn').style.display = 'none';
       
-      // Reset choice buttons
+      // Reset choice buttons and table rows
       for (let i = 0; i < 3; i++) {
         document.getElementById(`btn-choice-${i}`).classList.remove('selected');
+        const row = document.getElementById(`row-choice-${i}`);
+        if (row) {
+          row.classList.remove('selected');
+          row.classList.remove('recommended');
+        }
       }
       
       // Reset market state
