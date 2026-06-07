@@ -22,10 +22,11 @@ router.get('/game/:gameName', function(req, res, next) {
   if (gameName === 'catan') {
     return res.render('catan', { game: game });
   }
-  if (gameName === 'schwab') {
-    return res.render('schwab', { game: game });
-  }
   res.render('game', { game: game });
+});
+
+router.get('/schwab', function(req, res, next) {
+  res.render('schwab');
 });
 
 export default router;

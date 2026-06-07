@@ -25,12 +25,6 @@ export const GAME_METADATA = {
     name: "Settlers of Catan",
     description: "An interactive demonstration. Build settlements and trade resources while the Bayesian Advisor learns your winning strategy.",
     image: "/images/catan.png"
-  },
-  schwab: {
-    id: "schwab",
-    name: "Schwab Portfolio Advisor",
-    description: "A professional financial demonstration. Manage a dynamic portfolio and let the Bayesian Advisor learn your risk profile.",
-    image: "/images/schwab.png"
   }
 };
 
