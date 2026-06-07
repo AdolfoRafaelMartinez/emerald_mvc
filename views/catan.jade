@@ -16,7 +16,7 @@ block content
     
     /* Interactive Card Styles */
     .scenario-card {
-      min-height: 480px;
+      min-height: 440px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -63,6 +63,60 @@ block content
       border-color: var(--color-emerald-light);
       transform: translateX(5px);
       box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+    }
+    
+    /* SVG Board Styles */
+    .board-card {
+      padding: 25px;
+    }
+    .board-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .hex-poly {
+      stroke-width: 1.5px;
+      transition: fill 0.5s ease;
+    }
+    .settlement-node {
+      fill: rgba(255, 255, 255, 0.15);
+      stroke: rgba(255, 255, 255, 0.3);
+      stroke-width: 1.5px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .settlement-node.active-settlement {
+      fill: var(--color-gold);
+      stroke: #fff;
+      stroke-width: 2px;
+      r: 7;
+      filter: drop-shadow(0 0 6px var(--color-gold));
+    }
+    .settlement-node.active-city {
+      fill: #ef4444;
+      stroke: var(--color-gold);
+      stroke-width: 2.5px;
+      r: 9;
+      filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.9));
+    }
+    .road-line {
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 4px;
+      stroke-linecap: round;
+      transition: all 0.4s ease;
+    }
+    .road-line.active-road {
+      stroke: var(--color-emerald-light);
+      stroke-width: 5px;
+      filter: drop-shadow(0 0 5px var(--color-emerald-light));
+    }
+    .road-line.active-road-alt {
+      stroke: var(--color-gold);
+      stroke-width: 5px;
+      filter: drop-shadow(0 0 5px var(--color-gold));
     }
     
     /* Bayesian Stats Panel */
@@ -147,7 +201,7 @@ block content
       font-size: 0.85rem;
       color: var(--text-secondary);
       border: 1px solid rgba(255, 255, 255, 0.05);
-      max-height: 200px;
+      max-height: 180px;
       overflow-y: auto;
     }
     
@@ -210,91 +264,169 @@ block content
     }
 
   .catan-container
-    <!-- LEFT: Scenario and Decision Card -->
-    .glass-card.scenario-card
-      <!-- STAGE 1 -->
-      .stage-card.active#stage-1
-        div
-          .scenario-title Step 1: Initial Settlement Placement
-          .scenario-description The island of Catan is wide open. You must place your first settlement. Which intersection do you claim?
-        .choice-list
-          button.choice-btn(onclick="makeChoice(0, 0)")
-            strong Choice A: Mountain (Ore-6), Fields (Wheat-8), Pasture (Sheep-5)
-            br
-            span.text-muted High mineral deposits, strong potential for City development.
-          button.choice-btn(onclick="makeChoice(0, 1)")
-            strong Choice B: Forest (Wood-5), Hills (Brick-9), Fields (Wheat-10)
-            br
-            span.text-muted Abundant building materials, perfect for starting roads and expansions.
-          button.choice-btn(onclick="makeChoice(0, 2)")
-            strong Choice C: Forest (Wood-8), Pasture (Sheep-4) + Coastal 2:1 Sheep Port
-            br
-            span.text-muted Coastal trade advantage, setting up specialized harbor exchanges.
+    <!-- LEFT: Scenario and Board -->
+    div(style="display:flex; flex-direction:column; gap:30px;")
+      .glass-card.scenario-card
+        <!-- STAGE 1 -->
+        .stage-card.active#stage-1
+          div
+            .scenario-title Step 1: Initial Settlement Placement
+            .scenario-description The island of Catan is wide open. You must place your first settlement. Which intersection do you claim on the map?
+          .choice-list
+            button.choice-btn(onclick="makeChoice(0, 0)")
+              strong Choice A: Settle on Ore-6, Wheat-8, and Sheep-5
+              br
+              span.text-muted High mineral deposits, strong potential for City development.
+            button.choice-btn(onclick="makeChoice(0, 1)")
+              strong Choice B: Settle on Wood-11, Brick-9, and Wheat-10
+              br
+              span.text-muted Abundant building materials, perfect for starting roads and expansions.
+            button.choice-btn(onclick="makeChoice(0, 2)")
+              strong Choice C: Settle on Wood-11, Sheep-4 + Coastal 2:1 Sheep Port
+              br
+              span.text-muted Coastal trade advantage, setting up specialized harbor exchanges.
 
-      <!-- STAGE 2 -->
-      .stage-card#stage-2
-        div
-          .scenario-title Step 2: Early Resource Trade
-          .scenario-description You hold excess resources but need cards to progress. How do you trade?
-        .choice-list
-          button.choice-btn(onclick="makeChoice(1, 0)")
-            strong Choice A: Trade 2 Wood + 1 Brick to get 1 Ore + 1 Wheat
-            br
-            span.text-muted Sacrificing builders to secure mineral cards for quick upgrades.
-          button.choice-btn(onclick="makeChoice(1, 1)")
-            strong Choice B: Trade 2 Sheep + 1 Ore to get 1 Brick + 1 Wood
-            br
-            span.text-muted Converting excess cards to lay down road connectors.
-          button.choice-btn(onclick="makeChoice(1, 2)")
-            strong Choice C: Build coastal Settlement and trade 2 Sheep directly to the 2:1 Port
-            br
-            span.text-muted Utilizing your harbor access to bypass trading with other players.
+        <!-- STAGE 2 -->
+        .stage-card#stage-2
+          div
+            .scenario-title Step 2: Early Resource Trade
+            .scenario-description You hold excess resources but need cards to progress. How do you trade?
+          .choice-list
+            button.choice-btn(onclick="makeChoice(1, 0)")
+              strong Choice A: Trade 2 Wood + 1 Brick to get 1 Ore + 1 Wheat
+              br
+              span.text-muted Sacrificing builders to secure mineral cards for quick upgrades.
+            button.choice-btn(onclick="makeChoice(1, 1)")
+              strong Choice B: Trade 2 Sheep + 1 Ore to get 1 Brick + 1 Wood
+              br
+              span.text-muted Converting excess cards to lay down road connectors.
+            button.choice-btn(onclick="makeChoice(1, 2)")
+              strong Choice C: Build coastal Settlement and trade 2 Sheep directly to the 2:1 Port
+              br
+              span.text-muted Utilizing your harbor access to bypass trading with other players.
 
-      <!-- STAGE 3 -->
-      .stage-card#stage-3
-        div
-          .scenario-title Step 3: Mid-Game Construction
-          .scenario-description Resources have accumulated in your hand. What is your construction priority?
-        .choice-list
-          button.choice-btn(onclick="makeChoice(2, 0)")
-            strong Choice A: Upgrade your starting settlement to a City (3 Ore, 2 Wheat)
-            br
-            span.text-muted Double resource production from high-number hexes.
-          button.choice-btn(onclick="makeChoice(2, 1)")
-            strong Choice B: Build a Settlement on new clay/wood hex + 1 Road (1 Wood, 1 Brick, 1 Wheat, 1 Sheep + Road)
-            br
-            span.text-muted Spreading across Catan's map to secure more land.
-          button.choice-btn(onclick="makeChoice(2, 2)")
-            strong Choice C: Buy a Development Card (1 Ore, 1 Wheat, 1 Sheep)
-            br
-            span.text-muted Drawing from the codex to find Knights or secret Victory Points.
+        <!-- STAGE 3 -->
+        .stage-card#stage-3
+          div
+            .scenario-title Step 3: Mid-Game Construction
+            .scenario-description Resources have accumulated in your hand. What is your construction priority?
+          .choice-list
+            button.choice-btn(onclick="makeChoice(2, 0)")
+              strong Choice A: Upgrade your starting settlement to a City (3 Ore, 2 Wheat)
+              br
+              span.text-muted Double resource production from high-number hexes.
+            button.choice-btn(onclick="makeChoice(2, 1)")
+              strong Choice B: Build a Settlement on new clay/wood hex + 1 Road (1 Wood, 1 Brick, 1 Wheat, 1 Sheep + Road)
+              br
+              span.text-muted Spreading across Catan's map to secure more land.
+            button.choice-btn(onclick="makeChoice(2, 2)")
+              strong Choice C: Buy a Development Card (1 Ore, 1 Wheat, 1 Sheep)
+              br
+              span.text-muted Drawing from the codex to find Knights or secret Victory Points.
 
-      <!-- STAGE 4 -->
-      .stage-card#stage-4
-        div
-          .scenario-title Step 4: Final Victory Push
-          .scenario-description You are at 8 Victory Points. How do you grab the final 2 points for the win?
-        .choice-list
-          button.choice-btn(onclick="makeChoice(3, 0)")
-            strong Choice A: Build a City and buy Dev Cards to claim "Largest Army"
-            br
-            span.text-muted Relying on military knights and city upgrades.
-          button.choice-btn(onclick="makeChoice(3, 1)")
-            strong Choice B: Build 3 Roads to secure the "Longest Road" card
-            br
-            span.text-muted Locking down the road network to seal the victory.
-          button.choice-btn(onclick="makeChoice(3, 2)")
-            strong Choice C: Build Settlement on a general 3:1 Port to trade cards for points
-            br
-            span.text-muted Leveraging port dominance to convert final resources.
+        <!-- STAGE 4 -->
+        .stage-card#stage-4
+          div
+            .scenario-title Step 4: Final Victory Push
+            .scenario-description You are at 8 Victory Points. How do you grab the final 2 points for the win?
+          .choice-list
+            button.choice-btn(onclick="makeChoice(3, 0)")
+              strong Choice A: Build a City and buy Dev Cards to claim "Largest Army"
+              br
+              span.text-muted Relying on military knights and city upgrades.
+            button.choice-btn(onclick="makeChoice(3, 1)")
+              strong Choice B: Build 3 Roads to secure the "Longest Road" card
+              br
+              span.text-muted Locking down the road network to seal the victory.
+            button.choice-btn(onclick="makeChoice(3, 2)")
+              strong Choice C: Build Settlement on a general 3:1 Port to trade cards for points
+              br
+              span.text-muted Leveraging port dominance to convert final resources.
 
-      <!-- COMPLETION STATE -->
-      .stage-card#stage-complete
-        .celebration-box
-          .badge-icon 🏆
-          .scenario-title Scenario Complete!
-          .scenario-description You have guided your colony to victory! The Bayesian Advisor has successfully aligned its strategy with your choices.
-          button.btn.btn-emerald(onclick="resetScenario()") Play Again
+        <!-- COMPLETION STATE -->
+        .stage-card#stage-complete
+          .celebration-box
+            .badge-icon 🏆
+            .scenario-title Scenario Complete!
+            .scenario-description You have guided your colony to victory! The Bayesian Advisor has successfully aligned its strategy with your choices.
+            button.btn.btn-emerald(onclick="resetScenario()") Play Again
+
+      .glass-card.board-card
+        .scenario-title Runestone Board Map
+        .board-wrapper
+          svg#catan-board-svg(width="100%", height="260", viewBox="0 0 300 300")
+            <!-- Defs for graphics -->
+            defs
+              filter#glow(x="-20%", y="-20%", width="140%", height="140%")
+                feGaussianBlur(stdDeviation="3", result="blur")
+                feComposite(in="SourceGraphic", in2="blur", operator="over")
+            
+            <!-- Harbor Lines & Docks -->
+            <!-- Sheep Port 2:1 -->
+            line(x1="33", y1="127.5", x2="40", y2="95", stroke="#fbbf24", stroke-dasharray="2,2", stroke-width="1.5")
+            line(x1="72", y1="105", x2="40", y2="95", stroke="#fbbf24", stroke-dasharray="2,2", stroke-width="1.5")
+            circle(cx="40", cy="95", r="13", fill="#042f2e", stroke="#fbbf24", stroke-width="1.5")
+            text(x="40", y="99", fill="#fbbf24", font-size="8", font-weight="bold", text-anchor="middle") 2:1🐑
+
+            <!-- General Port 3:1 -->
+            line(x1="228", y1="105", x2="255", y2="95", stroke="#fbbf24", stroke-dasharray="2,2", stroke-width="1.5")
+            line(x1="267", y1="127.5", x2="255", y2="95", stroke="#fbbf24", stroke-dasharray="2,2", stroke-width="1.5")
+            circle(cx="255", cy="95", r="13", fill="#042f2e", stroke="#fbbf24", stroke-width="1.5")
+            text(x="255", y="99", fill="#fbbf24", font-size="8", font-weight="bold", text-anchor="middle") 3:1⛵
+
+            <!-- 7 Hexagons Cluster -->
+            <!-- 1. NW (Ore 6) -->
+            polygon.hex-poly(points="150,105 111,127.5 72,105 72,60 111,37.5 150,60", fill="#374151", stroke="#4b5563")
+            <!-- 2. NE (Wheat 8) -->
+            polygon.hex-poly(points="228,105 189,127.5 150,105 150,60 189,37.5 228,60", fill="#78350f", stroke="#b45309")
+            <!-- 3. West (Wood 11) -->
+            polygon.hex-poly(points="111,172.5 72,195 33,172.5 33,127.5 72,105 111,127.5", fill="#14532d", stroke="#16a34a")
+            <!-- 4. Center (Sheep 5) -->
+            polygon.hex-poly(points="189,172.5 150,195 111,172.5 111,127.5 150,105 189,127.5", fill="#064e3b", stroke="#10b981")
+            <!-- 5. East (Pasture 4) -->
+            polygon.hex-poly(points="267,172.5 228,195 189,172.5 189,127.5 228,105 267,127.5", fill="#065f46", stroke="#34d399")
+            <!-- 6. SW (Wheat 10) -->
+            polygon.hex-poly(points="150,240 111,262.5 72,240 72,195 111,172.5 150,195", fill="#92400e", stroke="#f59e0b")
+            <!-- 7. SE (Brick 9) -->
+            polygon.hex-poly(points="228,240 189,262.5 150,240 150,195 189,172.5 228,195", fill="#7f1d1d", stroke="#ef4444")
+
+            <!-- Number Tokens -->
+            circle(cx="111", cy="82.5", r="12", fill="#1f2937", stroke="#9ca3af")
+            text(x="111", y="86.5", fill="#f9fafb", font-size="10", font-weight="bold", text-anchor="middle") 6
+            
+            circle(cx="189", cy="82.5", r="12", fill="#451a03", stroke="#d97706")
+            text(x="189", y="86.5", fill="#f9fafb", font-size="10", font-weight="bold", text-anchor="middle") 8
+
+            circle(cx="72", cy="150", r="12", fill="#062f17", stroke="#22c55e")
+            text(x="72", y="154", fill="#f9fafb", font-size="10", font-weight="bold", text-anchor="middle") 11
+
+            circle(cx="150", cy="150", r="12", fill="#022c22", stroke="#10b981")
+            text(x="150", y="154", fill="#fbbf24", font-size="10", font-weight="bold", text-anchor="middle") 5
+
+            circle(cx="228", cy="150", r="12", fill="#064e3b", stroke="#34d399")
+            text(x="228", y="154", fill="#f9fafb", font-size="10", font-weight="bold", text-anchor="middle") 4
+
+            circle(cx="111", cy="217.5", r="12", fill="#78350f", stroke="#f59e0b")
+            text(x="111", y="221.5", fill="#f9fafb", font-size="10", font-weight="bold", text-anchor="middle") 10
+
+            circle(cx="189", cy="217.5", r="12", fill="#4c0519", stroke="#ef4444")
+            text(x="189", y="221.5", fill="#f9fafb", font-size="10", font-weight="bold", text-anchor="middle") 9
+
+            <!-- Roads (Background Edges) -->
+            line#road-a.road-line(x1="150", y1="105", x2="189", y2="127.5")
+            line#road-b.road-line(x1="111", y1="172.5", x2="72", y2="195")
+            line#road-c.road-line(x1="72", y1="105", x2="33", y2="127.5")
+            
+            line#road-stage3.road-line(x1="111", y1="172.5", x2="150", y2="195")
+            line#road-stage4.road-line(x1="189", y1="172.5", x2="228", y2="195")
+            line#road-stage4-alt.road-line(x1="228", y1="195", x2="267", y2="172.5")
+
+            <!-- Settlement Nodes -->
+            circle#node-a.settlement-node(cx="150", cy="105", r="5.5")
+            circle#node-b.settlement-node(cx="111", cy="172.5", r="5.5")
+            circle#node-c.settlement-node(cx="72", cy="105", r="5.5")
+            circle#node-stage3.settlement-node(cx="150", cy="195", r="5.5")
+            circle#node-stage4.settlement-node(cx="228", cy="105", r="5.5")
 
     <!-- RIGHT: Bayesian Tracker & Advisor -->
     .bayesian-panel
@@ -386,8 +518,11 @@ block content
 
     let probabilities = [0.3333, 0.3333, 0.3333];
     let currentStage = 0;
+    let playerChoices = [];
 
     function makeChoice(stage, choiceIndex) {
+      playerChoices.push(choiceIndex);
+      
       // 1. Fetch Likelihoods for this choice
       const choiceLikelihoods = LIKELIHOODS[stage][choiceIndex];
       const priors = [...probabilities];
@@ -406,8 +541,9 @@ block content
       // 4. Log the Math details
       logBayesianMath(stage, choiceIndex, priors, choiceLikelihoods, probabilities);
       
-      // 5. Update UI Progress Bars and Text
+      // 5. Update UI Progress Bars, Texts, and Map Board
       updateUI();
+      updateBoardMap();
       
       // 6. Transition to Next Stage
       document.getElementById(`stage-${stage + 1}`).classList.remove('active');
@@ -473,9 +609,63 @@ block content
       document.getElementById('advisor-text').innerText = ADVISOR_RESPONSES[maxIndex].text;
     }
 
+    function updateBoardMap() {
+      // STAGE 1: Placement mapping
+      if (playerChoices.length >= 1) {
+        const stage1Choice = playerChoices[0];
+        if (stage1Choice === 0) {
+          document.getElementById('node-a').className.baseVal = 'settlement-node active-settlement';
+          document.getElementById('road-a').className.baseVal = 'road-line active-road';
+        } else if (stage1Choice === 1) {
+          document.getElementById('node-b').className.baseVal = 'settlement-node active-settlement';
+          document.getElementById('road-b').className.baseVal = 'road-line active-road';
+        } else if (stage1Choice === 2) {
+          document.getElementById('node-c').className.baseVal = 'settlement-node active-settlement';
+          document.getElementById('road-c').className.baseVal = 'road-line active-road';
+        }
+      }
+      
+      // STAGE 3: Construction mapping
+      if (playerChoices.length >= 3) {
+        const stage1Choice = playerChoices[0];
+        const stage3Choice = playerChoices[2];
+        
+        if (stage3Choice === 0) {
+          // Upgrade initial settlement to City
+          const nodeName = stage1Choice === 0 ? 'node-a' : stage1Choice === 1 ? 'node-b' : 'node-c';
+          document.getElementById(nodeName).className.baseVal = 'settlement-node active-city';
+        } else if (stage3Choice === 1) {
+          // Build secondary settlement & road
+          document.getElementById('node-stage3').className.baseVal = 'settlement-node active-settlement';
+          document.getElementById('road-stage3').className.baseVal = 'road-line active-road';
+        } else if (stage3Choice === 2) {
+          // Dev Card - flash the screen or glow center token
+        }
+      }
+      
+      // STAGE 4: Final Victory Push
+      if (playerChoices.length >= 4) {
+        const stage4Choice = playerChoices[3];
+        if (stage4Choice === 0) {
+          // Upgrade second settlement or stage3 node to City
+          if (document.getElementById('node-stage3').className.baseVal.includes('active-settlement')) {
+            document.getElementById('node-stage3').className.baseVal = 'settlement-node active-city';
+          }
+        } else if (stage4Choice === 1) {
+          // Build road network extension
+          document.getElementById('road-stage4').className.baseVal = 'road-line active-road-alt';
+          document.getElementById('road-stage4-alt').className.baseVal = 'road-line active-road-alt';
+        } else if (stage4Choice === 2) {
+          // Settle on the 3:1 general port
+          document.getElementById('node-stage4').className.baseVal = 'settlement-node active-settlement';
+        }
+      }
+    }
+
     function resetScenario() {
       probabilities = [0.3333, 0.3333, 0.3333];
       currentStage = 0;
+      playerChoices = [];
       
       // Reset stages visibility
       document.getElementById('stage-complete').classList.remove('active');
@@ -484,6 +674,16 @@ block content
         document.getElementById(`stage-${i + 1}`).classList.remove('active');
       }
       
+      // Reset map nodes and lines
+      const nodes = ['node-a', 'node-b', 'node-c', 'node-stage3', 'node-stage4'];
+      nodes.forEach(id => {
+        document.getElementById(id).className.baseVal = 'settlement-node';
+      });
+      const lines = ['road-a', 'road-b', 'road-c', 'road-stage3', 'road-stage4', 'road-stage4-alt'];
+      lines.forEach(id => {
+        document.getElementById(id).className.baseVal = 'road-line';
+      });
+
       // Clear logs
       const container = document.getElementById('math-log-container');
       container.innerHTML = `
