@@ -25,9 +25,13 @@ block content
     
     .catan-container {
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
+      grid-template-columns: 1fr;
       gap: 30px;
       margin-bottom: 40px;
+    }
+    
+    .catan-container .schwab-card {
+      margin-bottom: 0 !important;
     }
     
     @media (max-width: 768px) {
@@ -351,7 +355,7 @@ block content
       .glass-card.schwab-card
         .scenario-title Account Performance History
         .board-wrapper(style="background:rgba(0,0,0,0.3); border-radius:6px; padding:15px;")
-          svg(width="100%", height="110", viewBox="0 0 400 110")
+          svg(width="100%", height="140", viewBox="0 0 400 110", style="max-height:180px;")
             <!-- Grid lines -->
             line(x1="20", y1="10", x2="380", y2="10", stroke="rgba(255,255,255,0.05)", stroke-width="1")
             line(x1="20", y1="50", x2="380", y2="50", stroke="rgba(255,255,255,0.05)", stroke-width="1")
