@@ -19,6 +19,9 @@ router.get('/game/:gameName', function(req, res, next) {
   }
   
   const game = getGameInfo(gameName);
+  if (gameName === 'catan') {
+    return res.render('catan', { game: game });
+  }
   res.render('game', { game: game });
 });
 

@@ -1,0 +1,499 @@
+extends layout
+
+block content
+  style.
+    .catan-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    @media (min-width: 900px) {
+      .catan-container {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+    
+    /* Interactive Card Styles */
+    .scenario-card {
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .scenario-title {
+      font-family: var(--font-heading);
+      color: var(--color-gold);
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px rgba(251, 191, 36, 0.2);
+    }
+    
+    .scenario-description {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+    
+    .choice-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .choice-btn {
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 10px;
+      padding: 16px 20px;
+      text-align: left;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+    }
+    
+    .choice-btn:hover {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--color-emerald-light);
+      transform: translateX(5px);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+    }
+    
+    /* Bayesian Stats Panel */
+    .bayesian-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+    
+    .stat-header {
+      font-family: var(--font-heading);
+      color: var(--text-primary);
+      font-size: 1.3rem;
+      border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .formula-badge {
+      font-size: 0.8rem;
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--color-gold);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: monospace;
+    }
+    
+    /* Strategy Bars */
+    .strategy-item {
+      margin-bottom: 15px;
+    }
+    
+    .strategy-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .strategy-name {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .strategy-percentage {
+      font-family: monospace;
+      color: var(--color-emerald-light);
+      font-weight: 700;
+    }
+    
+    .bar-bg {
+      background: rgba(255, 255, 255, 0.05);
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .bar-fill {
+      background: linear-gradient(90deg, var(--color-emerald-dark), var(--color-emerald-light));
+      height: 100%;
+      width: 33.33%;
+      border-radius: 5px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+    }
+    
+    .bar-fill.gold {
+      background: linear-gradient(90deg, #b45309, var(--color-gold));
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+    }
+    
+    /* Live Math Logs */
+    .math-logs {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .math-log-entry {
+      margin-bottom: 8px;
+      border-left: 2px solid var(--color-gold);
+      padding-left: 10px;
+    }
+    
+    .math-log-entry.header {
+      border-left-color: var(--color-emerald-light);
+      color: var(--text-primary);
+      font-weight: bold;
+    }
+    
+    /* Advisor Commentary */
+    .advisor-bubble {
+      background: rgba(16, 185, 129, 0.08);
+      border-left: 4px solid var(--color-emerald-light);
+      border-radius: 0 12px 12px 0;
+      padding: 20px;
+      color: var(--text-primary);
+      font-style: italic;
+      line-height: 1.5;
+    }
+    
+    .advisor-bubble strong {
+      font-family: var(--font-heading);
+      color: var(--color-gold);
+      font-style: normal;
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    /* Interactive States */
+    .stage-card {
+      display: none;
+    }
+    .stage-card.active {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .celebration-box {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    
+    .badge-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+  .catan-container
+    <!-- LEFT: Scenario and Decision Card -->
+    .glass-card.scenario-card
+      <!-- STAGE 1 -->
+      .stage-card.active#stage-1
+        div
+          .scenario-title Step 1: Initial Settlement Placement
+          .scenario-description The island of Catan is wide open. You must place your first settlement. Which intersection do you claim?
+        .choice-list
+          button.choice-btn(onclick="makeChoice(0, 0)")
+            strong Choice A: Mountain (Ore-6), Fields (Wheat-8), Pasture (Sheep-5)
+            br
+            span.text-muted High mineral deposits, strong potential for City development.
+          button.choice-btn(onclick="makeChoice(0, 1)")
+            strong Choice B: Forest (Wood-5), Hills (Brick-9), Fields (Wheat-10)
+            br
+            span.text-muted Abundant building materials, perfect for starting roads and expansions.
+          button.choice-btn(onclick="makeChoice(0, 2)")
+            strong Choice C: Forest (Wood-8), Pasture (Sheep-4) + Coastal 2:1 Sheep Port
+            br
+            span.text-muted Coastal trade advantage, setting up specialized harbor exchanges.
+
+      <!-- STAGE 2 -->
+      .stage-card#stage-2
+        div
+          .scenario-title Step 2: Early Resource Trade
+          .scenario-description You hold excess resources but need cards to progress. How do you trade?
+        .choice-list
+          button.choice-btn(onclick="makeChoice(1, 0)")
+            strong Choice A: Trade 2 Wood + 1 Brick to get 1 Ore + 1 Wheat
+            br
+            span.text-muted Sacrificing builders to secure mineral cards for quick upgrades.
+          button.choice-btn(onclick="makeChoice(1, 1)")
+            strong Choice B: Trade 2 Sheep + 1 Ore to get 1 Brick + 1 Wood
+            br
+            span.text-muted Converting excess cards to lay down road connectors.
+          button.choice-btn(onclick="makeChoice(1, 2)")
+            strong Choice C: Build coastal Settlement and trade 2 Sheep directly to the 2:1 Port
+            br
+            span.text-muted Utilizing your harbor access to bypass trading with other players.
+
+      <!-- STAGE 3 -->
+      .stage-card#stage-3
+        div
+          .scenario-title Step 3: Mid-Game Construction
+          .scenario-description Resources have accumulated in your hand. What is your construction priority?
+        .choice-list
+          button.choice-btn(onclick="makeChoice(2, 0)")
+            strong Choice A: Upgrade your starting settlement to a City (3 Ore, 2 Wheat)
+            br
+            span.text-muted Double resource production from high-number hexes.
+          button.choice-btn(onclick="makeChoice(2, 1)")
+            strong Choice B: Build a Settlement on new clay/wood hex + 1 Road (1 Wood, 1 Brick, 1 Wheat, 1 Sheep + Road)
+            br
+            span.text-muted Spreading across Catan's map to secure more land.
+          button.choice-btn(onclick="makeChoice(2, 2)")
+            strong Choice C: Buy a Development Card (1 Ore, 1 Wheat, 1 Sheep)
+            br
+            span.text-muted Drawing from the codex to find Knights or secret Victory Points.
+
+      <!-- STAGE 4 -->
+      .stage-card#stage-4
+        div
+          .scenario-title Step 4: Final Victory Push
+          .scenario-description You are at 8 Victory Points. How do you grab the final 2 points for the win?
+        .choice-list
+          button.choice-btn(onclick="makeChoice(3, 0)")
+            strong Choice A: Build a City and buy Dev Cards to claim "Largest Army"
+            br
+            span.text-muted Relying on military knights and city upgrades.
+          button.choice-btn(onclick="makeChoice(3, 1)")
+            strong Choice B: Build 3 Roads to secure the "Longest Road" card
+            br
+            span.text-muted Locking down the road network to seal the victory.
+          button.choice-btn(onclick="makeChoice(3, 2)")
+            strong Choice C: Build Settlement on a general 3:1 Port to trade cards for points
+            br
+            span.text-muted Leveraging port dominance to convert final resources.
+
+      <!-- COMPLETION STATE -->
+      .stage-card#stage-complete
+        .celebration-box
+          .badge-icon 🏆
+          .scenario-title Scenario Complete!
+          .scenario-description You have guided your colony to victory! The Bayesian Advisor has successfully aligned its strategy with your choices.
+          button.btn.btn-emerald(onclick="resetScenario()") Play Again
+
+    <!-- RIGHT: Bayesian Tracker & Advisor -->
+    .bayesian-panel
+      .glass-card
+        .stat-header
+          span Bayesian Belief Tracker
+          span.formula-badge P(S|C) = P(C|S)*P(S) / P(C)
+        
+        .strategy-item
+          .strategy-info
+            span.strategy-name Imperial Cities (Ore-Wheat-Sheep)
+            span.strategy-percentage#prob-cities 33.3%
+          .bar-bg
+            .bar-fill#bar-cities(style="width: 33.33%")
+            
+        .strategy-item
+          .strategy-info
+            span.strategy-name Expansionist Roads (Wood-Brick)
+            span.strategy-percentage#prob-roads 33.3%
+          .bar-bg
+            .bar-fill#bar-roads(style="width: 33.33%")
+            
+        .strategy-item
+          .strategy-info
+            span.strategy-name Resource Monopolizer (Port Trading)
+            span.strategy-percentage#prob-ports 33.3%
+          .bar-bg
+            .bar-fill.gold#bar-ports(style="width: 33.33%")
+
+      .glass-card
+        .stat-header Live Math Updates
+        .math-logs#math-log-container
+          .math-log-entry.header Prior beliefs initialized.
+          .math-log-entry P(Cities) = 0.333 | P(Roads) = 0.333 | P(Ports) = 0.333
+
+      .advisor-bubble
+        strong#advisor-title Game Master Advisor
+        span#advisor-text Welcome, settler. Make your initial placement on the board. I am observing your choices to align my strategic advice with your victory path.
+
+  script.
+    // LIKELIHOOD VALUES: P(Choice | Strategy)
+    // Indexes: 0 = Cities (Ore-Wheat-Sheep), 1 = Roads (Wood-Brick), 2 = Ports (Harbors)
+    const LIKELIHOODS = {
+      0: { // Stage 1: Placements
+        0: [0.70, 0.20, 0.10], // Choice A
+        1: [0.15, 0.70, 0.15], // Choice B
+        2: [0.10, 0.10, 0.80]  // Choice C
+      },
+      1: { // Stage 2: Trades
+        0: [0.80, 0.10, 0.10], // Choice A
+        1: [0.10, 0.80, 0.10], // Choice B
+        2: [0.10, 0.10, 0.80]  // Choice C
+      },
+      2: { // Stage 3: Construction
+        0: [0.85, 0.05, 0.10], // Choice A
+        1: [0.05, 0.85, 0.10], // Choice B
+        2: [0.60, 0.10, 0.30]  // Choice C
+      },
+      3: { // Stage 4: Victory
+        0: [0.90, 0.05, 0.05], // Choice A
+        1: [0.05, 0.90, 0.05], // Choice B
+        2: [0.10, 0.10, 0.80]  // Choice C
+      }
+    };
+
+    const STRATEGY_NAMES = [
+      "Imperial Cities (Ore-Wheat-Sheep)",
+      "Expansionist Roads (Wood-Brick)",
+      "Resource Monopolizer (Port Trading)"
+    ];
+
+    const ADVISOR_RESPONSES = [
+      // Cities
+      {
+        title: "Game Master: City Architect",
+        text: "I see you are building a formidable empire! You should focus on upgrading your remaining settlements to Cities to double your Ore/Wheat yield, and buy Development Cards to lock down the Largest Army."
+      },
+      // Roads
+      {
+        title: "Game Master: Expansionist Trailblazer",
+        text: "Ah, a bold explorer! Focus on extending your road network to cut off your opponents and claim the Longest Road. Expand to the high-yield Hills/Forest hex to sustain your expansion."
+      },
+      // Ports
+      {
+        title: "Game Master: Port Merchant",
+        text: "A master merchant! Secure the 3:1 general port next, then trade your massive resource surplus to buy whatever you need. You don't need to trade with untrustworthy opponents; the bank is your ally."
+      }
+    ];
+
+    let probabilities = [0.3333, 0.3333, 0.3333];
+    let currentStage = 0;
+
+    function makeChoice(stage, choiceIndex) {
+      // 1. Fetch Likelihoods for this choice
+      const choiceLikelihoods = LIKELIHOODS[stage][choiceIndex];
+      const priors = [...probabilities];
+      
+      // 2. Bayesian Update: Posterior = Likelihood * Prior
+      let posteriors = [0, 0, 0];
+      let numeratorSum = 0;
+      for (let i = 0; i < 3; i++) {
+        posteriors[i] = choiceLikelihoods[i] * priors[i];
+        numeratorSum += posteriors[i];
+      }
+      
+      // 3. Normalization: divide by sum
+      probabilities = posteriors.map(val => val / numeratorSum);
+      
+      // 4. Log the Math details
+      logBayesianMath(stage, choiceIndex, priors, choiceLikelihoods, probabilities);
+      
+      // 5. Update UI Progress Bars and Text
+      updateUI();
+      
+      // 6. Transition to Next Stage
+      document.getElementById(`stage-${stage + 1}`).classList.remove('active');
+      currentStage++;
+      
+      if (currentStage < 4) {
+        document.getElementById(`stage-${currentStage + 1}`).classList.add('active');
+      } else {
+        document.getElementById('stage-complete').classList.add('active');
+      }
+    }
+
+    function logBayesianMath(stage, choiceIndex, priors, likelihoods, posteriors) {
+      const container = document.getElementById('math-log-container');
+      
+      const choiceNames = ["Choice A", "Choice B", "Choice C"];
+      const headerEntry = document.createElement('div');
+      headerEntry.className = 'math-log-entry header';
+      headerEntry.innerText = `Step ${stage + 1}: Chosen ${choiceNames[choiceIndex]}`;
+      container.appendChild(headerEntry);
+      
+      // Add detailed breakdown
+      for (let i = 0; i < 3; i++) {
+        const name = i === 0 ? "Cities" : i === 1 ? "Roads" : "Ports";
+        const entry = document.createElement('div');
+        entry.className = 'math-log-entry';
+        
+        const priorStr = priors[i].toFixed(4);
+        const likeStr = likelihoods[i].toFixed(4);
+        const postStr = posteriors[i].toFixed(4);
+        
+        entry.innerHTML = `P(S<sub>${name}</sub>) = ${priorStr} (Prior)<br>` +
+                          `P(Choice | S<sub>${name}</sub>) = ${likeStr} (Likelihood)<br>` +
+                          `P(S<sub>${name}</sub> | Choice) = <strong>${postStr}</strong> (Posterior)`;
+        container.appendChild(entry);
+      }
+      
+      // Scroll to bottom
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function updateUI() {
+      // Set probability texts
+      document.getElementById('prob-cities').innerText = (probabilities[0] * 100).toFixed(1) + '%';
+      document.getElementById('prob-roads').innerText = (probabilities[1] * 100).toFixed(1) + '%';
+      document.getElementById('prob-ports').innerText = (probabilities[2] * 100).toFixed(1) + '%';
+      
+      // Adjust progress bar widths
+      document.getElementById('bar-cities').style.width = (probabilities[0] * 100) + '%';
+      document.getElementById('bar-roads').style.width = (probabilities[1] * 100) + '%';
+      document.getElementById('bar-ports').style.width = (probabilities[2] * 100) + '%';
+      
+      // Identify leading strategy and update advisor text
+      let maxIndex = 0;
+      for (let i = 1; i < 3; i++) {
+        if (probabilities[i] > probabilities[maxIndex]) {
+          maxIndex = i;
+        }
+      }
+      
+      // Update advisor text based on leading strategy
+      document.getElementById('advisor-title').innerText = ADVISOR_RESPONSES[maxIndex].title;
+      document.getElementById('advisor-text').innerText = ADVISOR_RESPONSES[maxIndex].text;
+    }
+
+    function resetScenario() {
+      probabilities = [0.3333, 0.3333, 0.3333];
+      currentStage = 0;
+      
+      // Reset stages visibility
+      document.getElementById('stage-complete').classList.remove('active');
+      document.getElementById('stage-1').classList.add('active');
+      for (let i = 1; i < 4; i++) {
+        document.getElementById(`stage-${i + 1}`).classList.remove('active');
+      }
+      
+      // Clear logs
+      const container = document.getElementById('math-log-container');
+      container.innerHTML = `
+        <div class="math-log-entry header">Prior beliefs initialized.</div>
+        <div class="math-log-entry">P(Cities) = 0.333 | P(Roads) = 0.333 | P(Ports) = 0.333</div>
+      `;
+      
+      // Reset Advisor
+      document.getElementById('advisor-title').innerText = "Game Master Advisor";
+      document.getElementById('advisor-text').innerText = "Welcome, settler. Make your initial placement on the board. I am observing your choices to align my strategic advice with your victory path.";
+      
+      updateUI();
+    }

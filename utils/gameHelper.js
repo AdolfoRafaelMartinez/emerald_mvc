@@ -19,6 +19,12 @@ export const GAME_METADATA = {
     name: "Tic-Tac-Toe",
     description: "A simple, classic two-player alignment game played on a 3x3 grid. Get three in a row to win!",
     image: "/images/tictactoe.png"
+  },
+  catan: {
+    id: "catan",
+    name: "Settlers of Catan",
+    description: "An interactive demonstration. Build settlements and trade resources while the Bayesian Advisor learns your winning strategy.",
+    image: "/images/catan.png"
   }
 };
 

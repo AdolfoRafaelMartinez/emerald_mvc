@@ -1,0 +1,43 @@
+This game is called "Settlers of Catan".
+
+OVERVIEW & OBJECTIVE
+In Settlers of Catan, players compete to establish the dominant colony on the island of Catan. By rolling dice, collecting resource cards, and trading with opponents or ports, players build roads, settlements, and cities. The first player to reach 10 Victory Points wins the game.
+
+RESOURCES & TILES
+The island of Catan is composed of 19 hexagonal terrain tiles, each producing a specific resource:
+1. Hills -> produces Brick (used for Roads, Settlements)
+2. Forest -> produces Wood (used for Roads, Settlements)
+3. Fields -> produces Wheat (used for Settlements, Cities, Development Cards)
+4. Pasture -> produces Sheep/Wool (used for Settlements, Development Cards)
+5. Mountains -> produces Ore (used for Cities, Development Cards)
+6. Desert -> produces nothing (where the Robber starts)
+
+BUILDING COSTS
+1. Road: 1 Wood + 1 Brick (1/10 Victory Point value, contributes to Longest Road)
+2. Settlement: 1 Wood + 1 Brick + 1 Wheat + 1 Sheep (1 Victory Point)
+3. City (upgrade from Settlement): 3 Ore + 2 Wheat (2 Victory Points, doubles resource yields)
+4. Development Card: 1 Ore + 1 Wheat + 1 Sheep (gives Knights, Victory Points, or Progress cards)
+
+STRATEGIC PLAYSTYLES (BAYESIAN MODEL CRITERIA)
+When advising a player, the AI Game Master models the player's intentions using three distinct strategic playstyles:
+
+1. IMPERIAL CITIES (ORE-WHEAT-SHEEP)
+   - Goal: Quickly upgrade settlements to Cities, monopolize resource production, and buy Development Cards to secure Victory Points and the Largest Army.
+   - Core Resources: Ore, Wheat, Sheep.
+   - Turn Indicators: Trading away Wood and Brick; prioritizing mountain/fields placement; buying Development Cards; upgrading to Cities early.
+
+2. EXPANSIONIST ROADS (WOOD-BRICK)
+   - Goal: Build long networks of Roads to block opponents, settle on multiple diverse resource spots, and claim the Longest Road card.
+   - Core Resources: Wood, Brick.
+   - Turn Indicators: Trading away Ore and Sheep; placing settlements on Forests/Hills; building multiple roads in a single turn; expanding rapidly to new hex intersections.
+
+3. RESOURCE MONOPOLIZER (PORT TRADING)
+   - Goal: Settle on a highly productive resource tile (e.g., a 6-Pasture or 8-Forest) and construct a settlement on a corresponding 2:1 or 3:1 Harbor/Port. This allows trading cards with the bank at a premium rate instead of relying on other players.
+   - Core Resources: High production of any single resource + port access.
+   - Turn Indicators: Placing settlements on coastal harbor intersections; trading multiple cards of a single resource; prioritizing coastal placement over mineral-rich mountain tiles.
+
+BAYES' THEOREM & STRATEGY ADVISOR
+The Bayesian Advisor watches the player's resource exchanges and building purchases to update its belief distribution over these three strategies:
+- Prior P(Strategy): The initial probability before any moves are made.
+- Likelihood P(Choice | Strategy): The probability that a player following a specific strategy would make a given trade or building choice.
+- Posterior P(Strategy | Choice): The updated belief of the player's strategy, which dictates whether the advisor recommends building cities, extending roads, or seeking port trades.
