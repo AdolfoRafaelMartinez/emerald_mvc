@@ -281,6 +281,82 @@ block content
       font-weight: 600;
     }
     
+    /* Bayesian Risk Profiler Styling */
+    .stat-header {
+      font-family: var(--font-body);
+      font-weight: 700;
+      color: #fff;
+      font-size: 1.2rem;
+      border-bottom: 2px solid rgba(0, 118, 168, 0.4);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .formula-badge {
+      font-size: 0.75rem;
+      background: rgba(0, 164, 228, 0.15);
+      color: #00a4e4;
+      border: 1px solid rgba(0, 164, 228, 0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-family: monospace;
+    }
+    
+    .strategy-item {
+      margin-bottom: 20px;
+    }
+    
+    .strategy-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .strategy-name {
+      font-weight: 500;
+      color: #fff;
+    }
+    
+    .strategy-percentage {
+      font-family: monospace;
+      color: #00a4e4;
+      font-weight: 700;
+    }
+    
+    .bar-bg {
+      background: rgba(255, 255, 255, 0.05);
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .bar-fill {
+      height: 100%;
+      width: 33.33%;
+      border-radius: 5px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    #bar-cons {
+      background: linear-gradient(90deg, #005a9c, #38bdf8);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+    }
+    
+    #bar-mod {
+      background: linear-gradient(90deg, #d97706, #fbbf24);
+      box-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+    }
+    
+    #bar-aggr {
+      background: linear-gradient(90deg, #db2777, #ec4899);
+      box-shadow: 0 0 8px rgba(236, 72, 153, 0.4);
+    }
+    
     /* Math Log Overrides */
     .schwab-math-log {
       max-height: 150px;
@@ -380,19 +456,19 @@ block content
                 button.schwab-choice-btn#btn-choice-0(onclick="selectAllocation(0)")
                   div(style="display:flex; justify-content:space-between; align-items:center;")
                     strong Smooth Sailing Strategy (Conservative Allocation)
-                    span.rec-badge#rec-badge-0(style="display:none;") Profile Match
+                    span.rec-badge#rec-badge-0(style="display:none;") Past Strategy
                   br
                   span.text-muted Target: 70% Low Risk, 20% Medium Risk, 10% High Risk
                 button.schwab-choice-btn#btn-choice-1(onclick="selectAllocation(1)")
                   div(style="display:flex; justify-content:space-between; align-items:center;")
                     strong Bumper Cars Strategy (Moderate Allocation)
-                    span.rec-badge#rec-badge-1(style="display:none;") Profile Match
+                    span.rec-badge#rec-badge-1(style="display:none;") Past Strategy
                   br
                   span.text-muted Target: 20% Low Risk, 60% Medium Risk, 20% High Risk
                 button.schwab-choice-btn#btn-choice-2(onclick="selectAllocation(2)")
                   div(style="display:flex; justify-content:space-between; align-items:center;")
                     strong Thrill Seeker Strategy (Aggressive Allocation)
-                    span.rec-badge#rec-badge-2(style="display:none;") Profile Match
+                    span.rec-badge#rec-badge-2(style="display:none;") Past Strategy
                   br
                   span.text-muted Target: 10% Low Risk, 15% Medium Risk, 75% High Risk
 
@@ -464,7 +540,7 @@ block content
             span.strategy-name Thrill Seeker (Aggressive Profile)
             span.strategy-percentage#prob-aggr 33.3%
           .bar-bg
-            .bar-fill.gold#bar-aggr(style="width: 33.33%")
+            .bar-fill#bar-aggr(style="width: 33.33%")
 
       .glass-card.schwab-card
         .stat-header Bayesian Audit Log
