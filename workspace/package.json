@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node workspace/bin/www",
+    "start": "node ./bin/www",
     "dev": "npx nodemon --ignore games/ --inspect ./bin/www"
   },
   "type": "module",
