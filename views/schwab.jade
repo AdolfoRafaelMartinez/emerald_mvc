@@ -281,6 +281,64 @@ block content
       font-weight: 600;
     }
     
+    /* Color coding choice-group buttons to match asset tiers */
+    #btn-choice-0 {
+      background: rgba(56, 189, 248, 0.02);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+    #btn-choice-0:hover {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: #38bdf8;
+    }
+    #btn-choice-0.selected {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    }
+    #rec-badge-0 {
+      background: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+    
+    #btn-choice-1 {
+      background: rgba(245, 158, 11, 0.02);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    #btn-choice-1:hover {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: #f59e0b;
+    }
+    #btn-choice-1.selected {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: #f59e0b;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+    }
+    #rec-badge-1 {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+    
+    #btn-choice-2 {
+      background: rgba(236, 72, 153, 0.02);
+      border: 1px solid rgba(236, 72, 153, 0.25);
+    }
+    #btn-choice-2:hover {
+      background: rgba(236, 72, 153, 0.08);
+      border-color: #ec4899;
+    }
+    #btn-choice-2.selected {
+      background: rgba(236, 72, 153, 0.18);
+      border-color: #ec4899;
+      box-shadow: 0 0 12px rgba(236, 72, 153, 0.25);
+    }
+    #rec-badge-2 {
+      background: rgba(236, 72, 153, 0.12);
+      color: #ec4899;
+      border-color: rgba(236, 72, 153, 0.3);
+    }
+    
     /* Bayesian Risk Profiler Styling */
     .stat-header {
       font-family: var(--font-body);
@@ -455,19 +513,19 @@ block content
               .choice-group
                 button.schwab-choice-btn#btn-choice-0(onclick="selectAllocation(0)")
                   div(style="display:flex; justify-content:space-between; align-items:center;")
-                    strong Smooth Sailing Strategy (Conservative Allocation)
+                    strong(style="color:#38bdf8;") Smooth Sailing Strategy (Conservative Allocation)
                     span.rec-badge#rec-badge-0(style="display:none;") Previous Strategy
                   br
                   span.text-muted Target: 70% Low Risk, 20% Medium Risk, 10% High Risk
                 button.schwab-choice-btn#btn-choice-1(onclick="selectAllocation(1)")
                   div(style="display:flex; justify-content:space-between; align-items:center;")
-                    strong Bumper Cars Strategy (Moderate Allocation)
+                    strong(style="color:#f59e0b;") Bumper Cars Strategy (Moderate Allocation)
                     span.rec-badge#rec-badge-1(style="display:none;") Previous Strategy
                   br
                   span.text-muted Target: 20% Low Risk, 60% Medium Risk, 20% High Risk
                 button.schwab-choice-btn#btn-choice-2(onclick="selectAllocation(2)")
                   div(style="display:flex; justify-content:space-between; align-items:center;")
-                    strong Thrill Seeker Strategy (Aggressive Allocation)
+                    strong(style="color:#ec4899;") Thrill Seeker Strategy (Aggressive Allocation)
                     span.rec-badge#rec-badge-2(style="display:none;") Previous Strategy
                   br
                   span.text-muted Target: 10% Low Risk, 15% Medium Risk, 75% High Risk
