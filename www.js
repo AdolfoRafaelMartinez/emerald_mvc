@@ -16,7 +16,7 @@ import http from 'http';
  * Get port from environment and store in Express.
  */
 console.log(process.env.PORT);
-var port = process.env.PORT; // normalizePort(process.env.PORT || '3000');
+var port = 8080; // process.env.PORT; // normalizePort(process.env.PORT || '3000');
 console.log(`🚀 Server running on port ${port}`);
 app.set('port', port);
 
@@ -30,7 +30,9 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, '0.0.0.0', () => {
+  console.log(`App is listening on port ${port}`);
+});
 server.on('error', onError);
 server.on('listening', onListening);
 
