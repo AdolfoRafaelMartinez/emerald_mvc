@@ -4,7 +4,7 @@
  * Module dependencies.
  */ 
 
-import app from '../app.js';
+import app from './app.js';
 import debugFactory from 'debug';
 import 'dotenv/config';
 const debug = debugFactory('emerald-mvc:server');
@@ -16,7 +16,7 @@ import http from 'http';
  * Get port from environment and store in Express.
  */
 console.log(process.env.PORT);
-var port = 8080; // normalizePort(process.env.PORT || '3000');
+var port = process.env.PORT; // normalizePort(process.env.PORT || '3000');
 console.log(`🚀 Server running on port ${port}`);
 app.set('port', port);
 
