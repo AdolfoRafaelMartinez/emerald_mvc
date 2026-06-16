@@ -1,0 +1,58 @@
+This game is called "Tavern Portfolio Advisor" or "The Iron Bank of Eldoria Portfolio Rebalancer".
+
+The Tavern Portfolio Advisor is a fantasy wealth management simulator where players balance their vault treasury across three distinct asset classes over four volatile market cycles (representing different seasons and events). 
+
+OBJECTIVE
+Optimize your total wealth starting from 10,000 Gold while a Bayesian Master observes your decisions to determine your investor risk profile: Conservative, Moderate, or Risky.
+
+ASSET CLASSES
+1. Dwarven Gold Bonds & Vault CDs (Conservative Asset)
+   - Profile: Low Risk
+   - Behavior: Steady, guaranteed growth with minimal fluctuations.
+   - Return rates vary from +1% to +3% per turn depending on cycles.
+   
+2. Merchant Guild Real Estate & Trading Stocks (Moderate Asset)
+   - Profile: Medium Risk
+   - Behavior: Stable long-term growth with moderate ups and downs.
+   - Return rates vary from -5% to +12% per turn.
+
+3. Mana Crystal Crypto & Gnomish Startups (Risky Asset)
+   - Profile: High Risk
+   - Behavior: Extreme volatility, high risk, high return.
+   - Return rates vary from -40% to +80% per turn.
+
+MARKET SEASONS / CYCLES
+- Cycle 1: Stable Harvest (Stable Market)
+  - Dwarven Bonds & CDs: +0.8%
+  - Guild Real Estate & Stocks: +2.5%
+  - Mana Crypto & Startups: +5.0%
+- Cycle 2: Orc Invasion (Bear Market Crash)
+  - Dwarven Bonds & CDs: -0.2%
+  - Guild Real Estate & Stocks: -6.0%
+  - Mana Crypto & Startups: -24.0%
+- Cycle 3: Elven Golden Age (Bull Market Rally)
+  - Dwarven Bonds & CDs: +1.2%
+  - Guild Real Estate & Stocks: +8.5%
+  - Mana Crypto & Startups: +32.0%
+- Cycle 4: Wizard's Tempest (Highly Volatile)
+  - Dwarven Bonds & CDs: +0.5%
+  - Guild Real Estate & Stocks: -1.5%
+  - Mana Crypto & Startups: -15.0%
+
+REBALANCING STRATEGY PRESETS
+- Conservative Strategy:
+  - 70% Bonds & CDs, 20% Real Estate & Stocks, 10% Crypto & Startups
+- Moderate Strategy:
+  - 20% Bonds & CDs, 60% Real Estate & Stocks, 20% Crypto & Startups
+- Risky Strategy:
+  - 10% Bonds & CDs, 15% Real Estate & Stocks, 75% Crypto & Startups
+
+BAYESIAN RISK PROFILER
+Each turn, the advisor updates the player's profile probabilities based on their choice.
+The prior beliefs start at 33.3% each (Conservative, Moderate, Risky).
+The posterior probabilities are calculated using Bayes' Theorem:
+P(Profile | Choice) = P(Choice | Profile) * P(Profile) / P(Choice)
+
+Where P(Choice | Profile) is the Likelihood of choosing a particular rebalance preset given the investor's true risk profile.
+For example, a Conservative investor is highly likely (80%) to select the Conservative Strategy during a Bear Market, while a Risky investor is highly likely (70%) to choose the Risky Strategy to "buy the dip".
+Based on the leading probability, the Bayesian Master gives tailored strategic wealth advice to secure your gold treasury.

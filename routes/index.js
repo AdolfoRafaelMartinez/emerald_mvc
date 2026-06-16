@@ -22,6 +22,9 @@ router.get('/game/:gameName', function(req, res, next) {
   if (gameName === 'catan') {
     return res.render('catan', { game: game });
   }
+  if (gameName === 'wealth') {
+    return res.render('wealth', { game: game });
+  }
   res.render('game', { game: game });
 });
 

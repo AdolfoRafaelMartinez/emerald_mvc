@@ -25,6 +25,12 @@ export const GAME_METADATA = {
     name: "Settlers of Catan",
     description: "An interactive demonstration. Build settlements and trade resources while the Bayesian Advisor learns your winning strategy.",
     image: "/images/catan.png"
+  },
+  wealth: {
+    id: "wealth",
+    name: "Tavern Portfolio Advisor",
+    description: "Manage your vault treasury across Bonds & CDs, Real Estate & Stocks, and Crypto & Startups while the Bayesian Master learns your risk profile.",
+    image: "/images/wealth.png"
   }
 };
 

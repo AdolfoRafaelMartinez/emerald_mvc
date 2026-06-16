@@ -444,6 +444,13 @@ block content
     .schwab-logo
       span charles
       | SCHWAB
+    .cycle-tracker(style="display: flex; gap: 15px; align-items: center;")
+      span(style="color: #94a3b8; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;") Market Cycle
+      .cycle-steps(style="display: flex; gap: 8px;")
+        .cycle-step#cycle-step-1(style="padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; background: var(--schwab-blue); color: #fff; transition: all 0.3s; box-shadow: 0 0 8px rgba(0, 118, 168, 0.5);") 1
+        .cycle-step#cycle-step-2(style="padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; background: rgba(255,255,255,0.05); color: #94a3b8; transition: all 0.3s;") 2
+        .cycle-step#cycle-step-3(style="padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; background: rgba(255,255,255,0.05); color: #94a3b8; transition: all 0.3s;") 3
+        .cycle-step#cycle-step-4(style="padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; background: rgba(255,255,255,0.05); color: #94a3b8; transition: all 0.3s;") 4
     .schwab-logo-sub Wealth Management &amp; Bayesian Risk Advisor
 
   .catan-container
@@ -917,6 +924,29 @@ block content
       
       document.getElementById('advisor-title').innerText = ADVISOR_RESPONSES[maxIndex].title;
       document.getElementById('advisor-text').innerText = ADVISOR_RESPONSES[maxIndex].text;
+      
+      updateCycleTracker();
+    }
+
+    function updateCycleTracker() {
+      for (let i = 1; i <= 4; i++) {
+        const step = document.getElementById(`cycle-step-${i}`);
+        if (step) {
+          if (i === (currentTurn + 1) && currentTurn < 4) {
+            step.style.background = 'var(--schwab-blue)';
+            step.style.color = '#fff';
+            step.style.boxShadow = '0 0 8px rgba(0, 118, 168, 0.5)';
+          } else if (i <= currentTurn) {
+            step.style.background = 'rgba(0, 118, 168, 0.2)';
+            step.style.color = 'var(--schwab-blue)';
+            step.style.boxShadow = 'none';
+          } else {
+            step.style.background = 'rgba(255, 255, 255, 0.05)';
+            step.style.color = '#94a3b8';
+            step.style.boxShadow = 'none';
+          }
+        }
+      }
     }
 
     function showCompleteState() {
