@@ -1,13 +1,15 @@
 steps:
-  # 1. Build the container image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/emerald-mvc:$COMMIT_SHA', '.']
+  # Use Google Buildpacks to build the image without a Dockerfile
+  - name: 'gcr.io/k8s-skaffold/pack'
+    args:
+      - 'build'
+      - 'gcr.io/$PROJECT_ID/emerald-mvc'
+      - '--builder'
+      - 'gcr.io/buildpacks/builder:v1'
+      - '--path'
+      - '.'
 
-  # 2. Push the image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/emerald-mvc:$COMMIT_SHA']
-
-  # 3. Deploy to Cloud Run
+  # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -15,13 +17,12 @@ steps:
       - 'deploy'
       - 'emerald-mvc'
       - '--image'
-      - 'gcr.io/$PROJECT_ID/emerald-mvc:$COMMIT_SHA'
+      - 'gcr.io/$PROJECT_ID/emerald-mvc'
       - '--region'
       - 'us-central1'
       - '--allow-unauthenticated'
       - '--service-account'
       - 'nodejs-app-sa@emerald-497222.iam.gserviceaccount.com'
 
-# THIS IS THE PART YOU NEED TO ADD
 options:
   logging: CLOUD_LOGGING_ONLY
