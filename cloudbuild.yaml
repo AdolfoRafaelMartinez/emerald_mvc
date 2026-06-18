@@ -3,11 +3,11 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/emerald-mvc:$COMMIT_SHA', '.']
 
-  # 2. Push the image to the registry
+  # 2. Push the image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/emerald-mvc:$COMMIT_SHA']
 
-  # 3. Deploy the new image to your existing Cloud Run service
+  # 3. Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -18,5 +18,10 @@ steps:
       - 'gcr.io/$PROJECT_ID/emerald-mvc:$COMMIT_SHA'
       - '--region'
       - 'us-central1'
+      - '--allow-unauthenticated'
       - '--service-account'
       - 'nodejs-app-sa@emerald-497222.iam.gserviceaccount.com'
+
+# THIS IS THE PART YOU NEED TO ADD
+options:
+  logging: CLOUD_LOGGING_ONLY
