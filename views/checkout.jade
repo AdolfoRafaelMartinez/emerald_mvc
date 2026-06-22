@@ -1,0 +1,197 @@
+extends layout
+
+block content
+  .checkout-container
+    .back-nav
+      a.btn.btn-secondary(href='/') &larr; Back to Tavern
+
+    .checkout-grid
+      .checkout-card-preview
+        .credit-card-mockup
+          .card-glow
+          .card-header
+            span.card-brand Emerald Pay
+            .card-chip
+              .chip-line
+              .chip-line
+              .chip-line
+              .chip-line
+          .card-number-display •••• •••• •••• ••••
+          .card-info-row
+            .card-holder
+              .info-label Cardholder
+              .info-value.holder-display CARDHOLDER NAME
+            .card-expiry
+              .info-label Expires
+              .info-value.expiry-display MM/YY
+            .card-cvv
+              .info-label CVV
+              .info-value.cvv-display •••
+
+      .checkout-form-container.glass-card
+        h2.section-title Secure Checkout
+        p.section-subtitle Enter your payment details to test the integration.
+        
+        form#checkout-form
+          .form-group
+            label.input-label(for="card-name") Cardholder Name
+            input.input-text(type="text", id="card-name", placeholder="e.g. Adolfo Martinez", required)
+            
+          .form-group
+            label.input-label(for="card-number") Card Number
+            input.input-text(type="text", id="card-number", placeholder="4111 1111 1111 1111", maxlength="19", required)
+            
+          .form-row
+            .form-group.half-width
+              label.input-label(for="card-expiry") Expiry Date
+              input.input-text(type="text", id="card-expiry", placeholder="MM/YY", maxlength="5", required)
+            .form-group.half-width
+              label.input-label(for="card-cvv") CVV
+              input.input-text(type="password", id="card-cvv", placeholder="•••", maxlength="4", required)
+              
+          button.btn.btn-emerald.btn-block(type="submit", id="btn-submit-payment")
+            span Process Payment
+            i.btn-icon &rarr;
+
+    .response-section.glass-card(style="display: none;")
+      .response-header
+        span.status-indicator
+        h3.response-title Server Response
+      .response-meta
+        span.meta-tag.method-tag POST
+        span.meta-tag.url-tag /create-checkout-session
+        span.meta-tag.status-tag Status: --
+      .response-body-container
+        pre.response-body-pre
+          code.response-body-code Waiting for request...
+
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+      const cardNameInput = document.getElementById('card-name');
+      const cardNumberInput = document.getElementById('card-number');
+      const cardExpiryInput = document.getElementById('card-expiry');
+      const cardCvvInput = document.getElementById('card-cvv');
+      
+      const holderDisplay = document.querySelector('.holder-display');
+      const numberDisplay = document.querySelector('.number-display'); // Wait, card-number-display
+      const numberDisplayEl = document.querySelector('.card-number-display');
+      const expiryDisplay = document.querySelector('.expiry-display');
+      const cvvDisplay = document.querySelector('.cvv-display');
+      
+      // Live preview updates
+      cardNameInput.addEventListener('input', (e) => {
+        holderDisplay.textContent = e.target.value.toUpperCase() || 'CARDHOLDER NAME';
+      });
+      
+      cardNumberInput.addEventListener('input', (e) => {
+        // Format number with spaces
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = '';
+        for (let i = 0; i < value.length; i++) {
+          if (i > 0 && i % 4 === 0) {
+            formattedValue += ' ';
+          }
+          formattedValue += value[i];
+        }
+        e.target.value = formattedValue;
+        numberDisplayEl.textContent = formattedValue || '•••• •••• •••• ••••';
+      });
+      
+      cardExpiryInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        if (value.length > 2) {
+          e.target.value = value.slice(0, 2) + '/' + value.slice(2, 4);
+        } else {
+          e.target.value = value;
+        }
+        expiryDisplay.textContent = e.target.value || 'MM/YY';
+      });
+      
+      cardCvvInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/[^0-9]/g, '');
+        e.target.value = value;
+        cvvDisplay.textContent = '•'.repeat(value.length) || '•••';
+      });
+      
+      // Submit handling
+      const form = document.getElementById('checkout-form');
+      const responseSection = document.querySelector('.response-section');
+      const statusIndicator = document.querySelector('.status-indicator');
+      const statusTag = document.querySelector('.status-tag');
+      const responseBodyCode = document.querySelector('.response-body-code');
+      const submitBtn = document.getElementById('btn-submit-payment');
+      
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').textContent = 'Processing...';
+        
+        responseSection.style.display = 'block';
+        responseSection.scrollIntoView({ behavior: 'smooth' });
+        responseBodyCode.textContent = 'Sending request to server...';
+        statusTag.textContent = 'Status: Sending...';
+        statusTag.className = 'meta-tag status-tag status-sending';
+        
+        try {
+          const response = await fetch('/create-checkout-session', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              cardholderName: cardNameInput.value,
+              cardNumber: cardNumberInput.value.replace(/\s/g, ''),
+              expiry: cardExpiryInput.value,
+              cvv: cardCvvInput.value
+            })
+          });
+          
+          statusTag.textContent = `Status: ${response.status} ${response.statusText}`;
+          
+          if (response.status >= 200 && response.status < 400) {
+            statusIndicator.className = 'status-indicator status-success';
+            statusTag.className = 'meta-tag status-tag status-success';
+            
+            // If it was a redirect (fetch followed it or returned the final destination HTML/JSON)
+            const text = await response.text();
+            
+            // Display clean summary of response
+            let displayContent = `Status Code: ${response.status}\n`;
+            displayContent += `Redirected: ${response.redirected ? 'Yes' : 'No'}\n`;
+            displayContent += `URL: ${response.url}\n\n`;
+            
+            if (response.url && response.url !== window.location.href) {
+              displayContent += `Stripe Checkout URL Generated successfully!\nDestination: ${response.url}\n\n`;
+              displayContent += `Normally, the user would be redirected to: ${response.url}\n\n`;
+            }
+            
+            displayContent += `Response Body Content (truncated):\n${text.substring(0, 1000)}${text.length > 1000 ? '...' : ''}`;
+            responseBodyCode.textContent = displayContent;
+          } else {
+            statusIndicator.className = 'status-indicator status-error';
+            statusTag.className = 'meta-tag status-tag status-error';
+            
+            const text = await response.text();
+            let parsedText = text;
+            
+            // Extract error message from HTML error response if applicable
+            const match = text.match(/<pre>([\s\S]*?)<\/pre>/i) || text.match(/<h1>([\s\S]*?)<\/h1>/i);
+            if (match) {
+              parsedText = match[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+            }
+            
+            responseBodyCode.textContent = `Error Code: ${response.status}\n\nServer Error details:\n${parsedText.trim()}`;
+          }
+        } catch (err) {
+          statusIndicator.className = 'status-indicator status-error';
+          statusTag.textContent = 'Status: Network Error';
+          statusTag.className = 'meta-tag status-tag status-error';
+          responseBodyCode.textContent = `Network / Connection Error:\n${err.message}`;
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.querySelector('span').textContent = 'Process Payment';
+        }
+      });
+    });

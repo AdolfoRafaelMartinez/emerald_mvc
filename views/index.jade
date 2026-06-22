@@ -1,6 +1,13 @@
 extends layout
 
 block content
+  .checkout-banner.glass-card
+    .banner-content
+      h3.banner-title Setup Billing & Payment
+      p.banner-text Enter your credit card details to prepare for premium consultations.
+    a.btn.btn-emerald(href='/checkout', id='btn-go-to-checkout')
+      span Add Credit Card &rarr;
+
   .game-grid
     each game in games
       a.game-card(href='/game/' + game.id)
