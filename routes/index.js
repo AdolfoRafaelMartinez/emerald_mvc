@@ -3,7 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { getAvailableGames, getGameInfo } from '../utils/gameHelper.js';
 import Stripe from 'stripe';
+import dotenv from "dotenv";
 
+dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const YOUR_DOMAIN = 'http://www.armtegm.com';
 
