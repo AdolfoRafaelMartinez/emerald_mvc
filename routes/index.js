@@ -53,7 +53,7 @@ router.post('/create-checkout-session', async (req, res, next) => {
         },
       ],
       mode: 'payment',
-      success_url: `${YOUR_DOMAIN}/success.html`,
+      success_url: `${YOUR_DOMAIN}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       automatic_tax: { enabled: true },
     });
 

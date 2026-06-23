@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emerald Tavern - Payment Successful</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <style>
+    .success-icon-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+    
+    .success-badge {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(52, 211, 153, 0.4) 100%);
+      border: 2px solid var(--color-emerald-glow);
+      box-shadow: 0 0 25px var(--color-emerald-glow), inset 0 0 15px rgba(52, 211, 153, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulseGlow 2.5s infinite alternate;
+    }
+    
+    .success-checkmark {
+      font-size: 3rem;
+      color: var(--color-gold);
+      text-shadow: 0 0 12px var(--color-gold-glow);
+      animation: popCheckmark 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+      animation-delay: 0.2s;
+    }
+    
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.4), inset 0 0 10px rgba(52, 211, 153, 0.3);
+        border-color: rgba(16, 185, 129, 0.6);
+      }
+      100% {
+        box-shadow: 0 0 35px rgba(52, 211, 153, 0.8), inset 0 0 25px rgba(52, 211, 153, 0.6);
+        border-color: var(--color-emerald-light);
+      }
+    }
+    
+    @keyframes popCheckmark {
+      0% {
+        transform: scale(0) rotate(-45deg);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+      }
+    }
+    
+    .success-card {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+      animation: fadeInCard 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @keyframes fadeInCard {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-title {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      color: var(--text-primary);
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+    
+    .success-message {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+    
+    .invoice-details {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+    
+    .invoice-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(16, 185, 129, 0.08);
+    }
+    
+    .invoice-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-top: 5px;
+      font-weight: 700;
+    }
+    
+    .invoice-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .invoice-value {
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+    }
+    
+    .invoice-value.gold {
+      color: var(--color-gold);
+      text-shadow: 0 0 5px rgba(251, 191, 36, 0.3);
+    }
+    
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      padding: 10px 0;
+      border-bottom: 1px dashed rgba(16, 185, 129, 0.1);
+    }
+    
+    .benefit-item:last-child {
+      border-bottom: none;
+    }
+    
+    .benefit-icon {
+      color: var(--color-emerald-light);
+      font-size: 1.2rem;
+    }
+    
+    .benefit-text {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    
+    .benefits-list {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="tavern-title">Emerald Tavern <span>Master</span></h1>
+      <p class="tavern-subtitle">Seek wisdom from the game master...</p>
+    </header>
+    
+    <div class="glass-card success-card">
+      <div class="success-icon-container">
+        <div class="success-badge">
+          <span class="success-checkmark">✦</span>
+        </div>
+      </div>
+      
+      <h2 class="success-title">Tribute Accepted!</h2>
+      <p class="success-message">
+        Your gold has been received. The Tavern Master acknowledges your offering and grants you full passage to the codex.
+      </p>
+      
+      <div class="invoice-details">
+        <div class="invoice-row">
+          <span class="invoice-label">Tribute Paid</span>
+          <span class="invoice-value gold">$15.00 USD</span>
+        </div>
+        <div class="invoice-row">
+          <span class="invoice-label">Status</span>
+          <span class="invoice-value" style="color: var(--color-emerald-light); text-shadow: 0 0 5px rgba(16,185,129,0.3)">COMPLETED</span>
+        </div>
+        <div class="invoice-row">
+          <span class="invoice-label">Session ID</span>
+          <span class="invoice-value" id="session-id-display">Generating...</span>
+        </div>
+      </div>
+      
+      <div class="benefits-list">
+        <div class="benefit-item">
+          <span class="benefit-icon">✔</span>
+          <span class="benefit-text">Unlimited rule consultations with the AI Game Master</span>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">✔</span>
+          <span class="benefit-text">Deep-dive strategies for Settlers of Catan, Schwab, and more</span>
+        </div>
+        <div class="benefit-item">
+          <span class="benefit-icon">✔</span>
+          <span class="benefit-text">Custom setup guides and tailored gameplay insights</span>
+        </div>
+      </div>
+      
+      <div class="actions-row" style="justify-content: center;">
+        <a href="/" class="btn btn-emerald">
+          <span>Enter the Tavern</span>
+          <i class="btn-icon">&rarr;</i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sessionIdDisplay = document.getElementById('session-id-display');
+      
+      // Look for Stripe's checkout session ID in URL if they passed one (e.g. ?session_id=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlSessionId = urlParams.get('session_id');
+      
+      if (urlSessionId) {
+        sessionIdDisplay.textContent = urlSessionId.substring(0, 18) + '...';
+      } else {
+        // Fallback to a mythical receipt hash
+        const randHex = Array.from({length: 16}, () => Math.floor(Math.random()*16).toString(16)).join('').toUpperCase();
+        sessionIdDisplay.textContent = 'TXN-' + randHex.substring(0, 4) + '-' + randHex.substring(4, 8) + '-' + randHex.substring(8, 12);
+      }
+    });
+  </script>
+</body>
+</html>
