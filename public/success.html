@@ -179,7 +179,7 @@
       <div class="invoice-details">
         <div class="invoice-row">
           <span class="invoice-label">Tribute Paid</span>
-          <span class="invoice-value gold">$15.00 USD</span>
+          <span class="invoice-value gold" id="amount-display">$2.00 USD</span>
         </div>
         <div class="invoice-row">
           <span class="invoice-label">Status</span>
@@ -218,10 +218,12 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const sessionIdDisplay = document.getElementById('session-id-display');
+      const amountDisplay = document.getElementById('amount-display');
       
       // Look for Stripe's checkout session ID in URL if they passed one (e.g. ?session_id=...)
       const urlParams = new URLSearchParams(window.location.search);
       const urlSessionId = urlParams.get('session_id');
+      const urlAmount = urlParams.get('amount');
       
       if (urlSessionId) {
         sessionIdDisplay.textContent = urlSessionId.substring(0, 18) + '...';
@@ -229,6 +231,10 @@
         // Fallback to a mythical receipt hash
         const randHex = Array.from({length: 16}, () => Math.floor(Math.random()*16).toString(16)).join('').toUpperCase();
         sessionIdDisplay.textContent = 'TXN-' + randHex.substring(0, 4) + '-' + randHex.substring(4, 8) + '-' + randHex.substring(8, 12);
+      }
+
+      if (urlAmount) {
+        amountDisplay.textContent = '$' + urlAmount + ' USD';
       }
     });
   </script>

@@ -54,6 +54,15 @@ router.post('/create-checkout-session', async (req, res, next) => {
     // Dynamically detect domain protocol and host to support localhost and production environments
     const hostDomain = `${req.protocol}://${req.get('host')}`;
 
+    // Compute transaction amount to display on success page
+    let unitPrice = 2.00;
+    if (priceId.includes('_apprentice') || req.body.package === 'apprentice') {
+      unitPrice = 1.00;
+    } else if (priceId.includes('_archmage') || req.body.package === 'archmage') {
+      unitPrice = 3.00;
+    }
+    const totalAmount = (unitPrice * quantity).toFixed(2);
+
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
@@ -62,7 +71,7 @@ router.post('/create-checkout-session', async (req, res, next) => {
         },
       ],
       mode: 'payment',
-      success_url: `${hostDomain}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${hostDomain}/success.html?session_id={CHECKOUT_SESSION_ID}&amount=${totalAmount}`,
       automatic_tax: { enabled: true },
     });
 
