@@ -22,23 +22,23 @@ function formatMarkdown(text) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
-  
+
   // Bold **text**
   html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-  
+
   // Bullet points
   html = html.replace(/^\s*[\*\-]\s+(.*)$/gm, "<li>$1</li>");
-  
+
   // Wrap consecutive list items in <ul>
   html = html.replace(/(?:<li>(?:(?!<li>).)*?<\/li>\s*)+/gs, (match) => {
     return `<ul>\n${match.trim()}\n</ul>`;
   });
-  
+
   // Parse lines to build clean paragraphs and separate list tags
   const lines = html.split(/\r?\n/);
   let result = [];
   let currentParagraph = [];
-  
+
   for (let line of lines) {
     let trimmed = line.trim();
     if (!trimmed) {
@@ -48,7 +48,7 @@ function formatMarkdown(text) {
       }
       continue;
     }
-    
+
     // Check if line is part of a list structure
     if (trimmed.startsWith("<ul>") || trimmed.startsWith("<li>") || trimmed.startsWith("</ul>")) {
       if (currentParagraph.length > 0) {
@@ -60,11 +60,11 @@ function formatMarkdown(text) {
       currentParagraph.push(trimmed);
     }
   }
-  
+
   if (currentParagraph.length > 0) {
     result.push(`<p>${currentParagraph.join("<br/>")}</p>`);
   }
-  
+
   return result.join("\n");
 }
 
@@ -73,18 +73,18 @@ async function getAnswer(game, question) {
   try {
     const gameDir = `./games/${game}`;
     const embeddingsPath = `${gameDir}/embeddings.json`;
-    
+
     if (!fs.existsSync(embeddingsPath)) {
       return `❌ No embeddings found for ${game}!`;
     }
     const embeddings = JSON.parse(fs.readFileSync(embeddingsPath, "utf8"));
     console.log(`📚 Loaded ${embeddings.length} embeddings for ${game}`);
-    
+
     const questionResponse = await ai.models.embedContent({
       model: "text-embedding-004",
       contents: question,
     });
-    
+
     const questionEmbedding = questionResponse.embeddings[0].values;
     const similarities = embeddings.map((item) => {
       let dotProduct = 0;
@@ -101,19 +101,19 @@ async function getAnswer(game, question) {
         similarity: similarity,
       };
     });
-    
+
     const topChunks = similarities
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, 5);
-      
+
     console.log("🔍 Most relevant chunks found:");
     topChunks.forEach((chunk, i) => {
       console.log(`  ${i + 1}. Similarity: ${chunk.similarity.toFixed(3)}`);
     });
-    
+
     const context = topChunks.map((chunk) => chunk.text).join("\n\n");
     const gameInfo = getGameInfo(game);
-    
+
     const prompt = `You are a knowledgeable and friendly tabletop game master at the Emerald Tavern.
 Based on the following rulebook context for the game "${gameInfo.name}", answer the user's question.
 If the answer is not in the context, use your general knowledge of the game to answer, but indicate that this is general knowledge.
@@ -132,7 +132,7 @@ Question: ${question}
 Answer:`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: prompt,
     });
 
@@ -149,7 +149,7 @@ async function createEmbeddings(game) {
     const gameDir = `./games/${game}`;
     let text_data = "";
     const files = fs.readdirSync(gameDir);
-    
+
     // Find files
     const pdfFile = files.find(f => f.toLowerCase().endsWith('.pdf'));
     if (pdfFile) {
@@ -168,7 +168,7 @@ async function createEmbeddings(game) {
         throw new Error(`No source file (.txt or .pdf) found in game directory: ${gameDir}`);
       }
     }
-    
+
     console.log(`📄 Extracted ${text_data.length} characters from game source`);
     const chunks = [];
     const chunkSize = 1000;
@@ -176,19 +176,19 @@ async function createEmbeddings(game) {
       chunks.push(text_data.slice(i, i + chunkSize));
     }
     console.log(`📝 Created ${chunks.length} text chunks`);
-    
+
     const embeddings = [];
     const BATCH_SIZE = 50;
-    
+
     for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
       const batchChunks = chunks.slice(i, i + BATCH_SIZE);
       console.log(`🔄 Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(chunks.length / BATCH_SIZE)} (${batchChunks.length} chunks)`);
-      
+
       const response = await ai.models.embedContent({
         model: "text-embedding-004",
         contents: batchChunks,
       });
-      
+
       batchChunks.forEach((chunkText, idx) => {
         if (response.embeddings && response.embeddings[idx]) {
           embeddings.push({
@@ -197,10 +197,10 @@ async function createEmbeddings(game) {
           });
         }
       });
-      
+
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
-    
+
     fs.writeFileSync(`${gameDir}/embeddings.json`, JSON.stringify(embeddings, null, 2));
     console.log(`✅ Embeddings created and saved to ${gameDir}/embeddings.json`);
   } catch (error) {
@@ -209,15 +209,15 @@ async function createEmbeddings(game) {
   }
 }
 
-router.post('/', async function(req, res, next) {
+router.post('/', async function (req, res, next) {
   const gameName = req.body.game || 'clue';
   const question = req.body.question;
-  
+
   const gameDir = `./games/${gameName}`;
   if (!fs.existsSync(gameDir)) {
     return res.status(404).render('error', { message: 'Game folder not found', error: { status: 404 } });
   }
-  
+
   const embeddingsPath = `${gameDir}/embeddings.json`;
   if (!fs.existsSync(embeddingsPath)) {
     console.log(`\n1️⃣ First time setup for ${gameName} - Creating embeddings...`);
@@ -233,11 +233,11 @@ router.post('/', async function(req, res, next) {
   const answer = await getAnswer(gameName, question);
   const answerHtml = formatMarkdown(answer);
   const gameInfo = getGameInfo(gameName);
-  
-  res.render('answer', { 
-    game: gameInfo, 
-    question: question, 
-    answerHtml: answerHtml 
+
+  res.render('answer', {
+    game: gameInfo,
+    question: question,
+    answerHtml: answerHtml
   });
 });
 
