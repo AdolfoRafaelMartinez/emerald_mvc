@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node www.js",
     "dev": "nodemon --inspect www.js",
-    "devbrk": "nodemon --inspect-brk www.js"
+    "devbrk": "nodemon --inspect-brk www.js",
+    "embeddings": "node scripts/generateEmbeddings.js"
   },
   "type": "module",
   "dependencies": {
