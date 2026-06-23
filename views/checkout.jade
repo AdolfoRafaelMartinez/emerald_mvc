@@ -33,6 +33,18 @@ block content
         p.section-subtitle Enter your payment details to test the integration.
         
         form#checkout-form
+          .form-group(style="background: rgba(0,0,0,0.25); border: 1px dashed rgba(16,185,129,0.3); border-radius: 10px; padding: 15px; margin-bottom: 25px;")
+            h3(style="font-family: var(--font-heading); color: var(--color-gold); font-size: 1.1rem; margin-bottom: 12px; text-shadow: 0 0 5px rgba(251,191,36,0.2)") Order Details
+            .form-row
+              .form-group.half-width(style="margin-bottom: 0;")
+                label.input-label(for="package-select") Tribute Package
+                select.input-text#package-select(style="padding: 10px 15px; font-size: 0.95rem; background: rgba(5, 12, 9, 0.9); cursor: pointer;")
+                  option(value="apprentice", data-price="5.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ_apprentice") Apprentice Pass — $5.00
+                  option(value="master", data-price="15.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ" selected) Master Consultation — $15.00
+                  option(value="archmage", data-price="50.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ_archmage") Archmage VIP — $50.00
+              .form-group.half-width(style="margin-bottom: 0;")
+                label.input-label(for="quantity") Quantity
+                input.input-text#quantity(type="number", min="1", max="10", value="1", style="padding: 10px 15px; font-size: 0.95rem; background: rgba(5, 12, 9, 0.9);")
           .form-group
             label.input-label(for="card-name") Cardholder Name
             input.input-text(type="text", id="card-name", placeholder="e.g. Adolfo Martinez", required)
@@ -73,10 +85,12 @@ block content
       const cardCvvInput = document.getElementById('card-cvv');
       
       const holderDisplay = document.querySelector('.holder-display');
-      const numberDisplay = document.querySelector('.number-display'); // Wait, card-number-display
       const numberDisplayEl = document.querySelector('.card-number-display');
       const expiryDisplay = document.querySelector('.expiry-display');
       const cvvDisplay = document.querySelector('.cvv-display');
+      
+      const packageSelect = document.getElementById('package-select');
+      const quantityInput = document.getElementById('quantity');
       
       // Live preview updates
       cardNameInput.addEventListener('input', (e) => {
@@ -84,7 +98,6 @@ block content
       });
       
       cardNumberInput.addEventListener('input', (e) => {
-        // Format number with spaces
         let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
         let formattedValue = '';
         for (let i = 0; i < value.length; i++) {
@@ -121,6 +134,19 @@ block content
       const responseBodyCode = document.querySelector('.response-body-code');
       const submitBtn = document.getElementById('btn-submit-payment');
       
+      // Dynamic total calculation
+      function updateTotal() {
+        const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+        const price = parseFloat(selectedOption.getAttribute('data-price'));
+        const qty = parseInt(quantityInput.value) || 1;
+        const total = (price * qty).toFixed(2);
+        submitBtn.querySelector('span').textContent = `Process Payment — $${total}`;
+      }
+
+      packageSelect.addEventListener('change', updateTotal);
+      quantityInput.addEventListener('input', updateTotal);
+      updateTotal();
+      
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -138,13 +164,17 @@ block content
           const response = await fetch('/create-checkout-session', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
             },
             body: JSON.stringify({
               cardholderName: cardNameInput.value,
               cardNumber: cardNumberInput.value.replace(/\s/g, ''),
               expiry: cardExpiryInput.value,
-              cvv: cardCvvInput.value
+              cvv: cardCvvInput.value,
+              package: packageSelect.value,
+              priceId: packageSelect.options[packageSelect.selectedIndex].getAttribute('data-price-id'),
+              quantity: parseInt(quantityInput.value) || 1
             })
           });
           
@@ -154,21 +184,35 @@ block content
             statusIndicator.className = 'status-indicator status-success';
             statusTag.className = 'meta-tag status-tag status-success';
             
-            // If it was a redirect (fetch followed it or returned the final destination HTML/JSON)
-            const text = await response.text();
-            
-            // Display clean summary of response
+            let redirectUrl = '';
             let displayContent = `Status Code: ${response.status}\n`;
-            displayContent += `Redirected: ${response.redirected ? 'Yes' : 'No'}\n`;
-            displayContent += `URL: ${response.url}\n\n`;
             
-            if (response.url && response.url !== window.location.href) {
-              displayContent += `Stripe Checkout URL Generated successfully!\nDestination: ${response.url}\n\n`;
-              displayContent += `Normally, the user would be redirected to: ${response.url}\n\n`;
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              const data = await response.json();
+              redirectUrl = data.url;
+              displayContent += `Response: JSON URL generated successfully.\n`;
+            } else {
+              const text = await response.text();
+              redirectUrl = response.url;
+              displayContent += `Redirected: ${response.redirected ? 'Yes' : 'No'}\n`;
             }
             
-            displayContent += `Response Body Content (truncated):\n${text.substring(0, 1000)}${text.length > 1000 ? '...' : ''}`;
-            responseBodyCode.textContent = displayContent;
+            displayContent += `URL: ${redirectUrl}\n\n`;
+            
+            if (redirectUrl && redirectUrl !== window.location.href) {
+              displayContent += `Stripe Checkout URL Generated successfully!\nDestination: ${redirectUrl}\n\n`;
+              displayContent += `Redirecting to Stripe Checkout in 1.5 seconds...\n`;
+              responseBodyCode.textContent = displayContent;
+              
+              setTimeout(() => {
+                window.location.href = redirectUrl;
+              }, 1500);
+            } else {
+              responseBodyCode.textContent = displayContent;
+              submitBtn.disabled = false;
+              updateTotal();
+            }
           } else {
             statusIndicator.className = 'status-indicator status-error';
             statusTag.className = 'meta-tag status-tag status-error';
@@ -176,22 +220,22 @@ block content
             const text = await response.text();
             let parsedText = text;
             
-            // Extract error message from HTML error response if applicable
             const match = text.match(/<pre>([\s\S]*?)<\/pre>/i) || text.match(/<h1>([\s\S]*?)<\/h1>/i);
             if (match) {
               parsedText = match[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
             }
             
             responseBodyCode.textContent = `Error Code: ${response.status}\n\nServer Error details:\n${parsedText.trim()}`;
+            submitBtn.disabled = false;
+            updateTotal();
           }
         } catch (err) {
           statusIndicator.className = 'status-indicator status-error';
           statusTag.textContent = 'Status: Network Error';
           statusTag.className = 'meta-tag status-tag status-error';
           responseBodyCode.textContent = `Network / Connection Error:\n${err.message}`;
-        } finally {
           submitBtn.disabled = false;
-          submitBtn.querySelector('span').textContent = 'Process Payment';
+          updateTotal();
         }
       });
     });

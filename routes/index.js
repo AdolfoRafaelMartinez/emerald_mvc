@@ -44,20 +44,33 @@ router.get('/checkout', function (req, res, next) {
 
 router.post('/create-checkout-session', async (req, res, next) => {
   try {
+    let priceId = req.body.priceId;
+    // Fallback to default if priceId is empty, missing, or a dummy placeholder option
+    if (!priceId || priceId.includes('_apprentice') || priceId.includes('_archmage')) {
+      priceId = 'price_1TlG8mHOAmfdroOCyiElxlIQ';
+    }
+    const quantity = parseInt(req.body.quantity) || 1;
+
+    // Dynamically detect domain protocol and host to support localhost and production environments
+    const hostDomain = `${req.protocol}://${req.get('host')}`;
+
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-          price: 'price_1TlG8mHOAmfdroOCyiElxlIQ',
-          quantity: 1,
+          price: priceId,
+          quantity: quantity,
         },
       ],
       mode: 'payment',
-      success_url: `${YOUR_DOMAIN}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${hostDomain}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       automatic_tax: { enabled: true },
     });
 
-    res.redirect(303, session.url);
+    if (req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1)) {
+      res.json({ url: session.url });
+    } else {
+      res.redirect(303, session.url);
+    }
   } catch (error) {
     next(error);
   }
