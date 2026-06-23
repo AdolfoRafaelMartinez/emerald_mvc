@@ -1,69 +1,29 @@
 extends layout
 
 block content
-  .checkout-container
+  .checkout-container(style="max-width: 600px; margin: 0 auto; width: 100%;")
     .back-nav
       a.btn.btn-secondary(href='/') &larr; Back to Tavern
 
-    .checkout-grid
-      .checkout-card-preview
-        .credit-card-mockup
-          .card-glow
-          .card-header
-            span.card-brand Emerald Pay
-            .card-chip
-              .chip-line
-              .chip-line
-              .chip-line
-              .chip-line
-          .card-number-display •••• •••• •••• ••••
-          .card-info-row
-            .card-holder
-              .info-label Cardholder
-              .info-value.holder-display CARDHOLDER NAME
-            .card-expiry
-              .info-label Expires
-              .info-value.expiry-display MM/YY
-            .card-cvv
-              .info-label CVV
-              .info-value.cvv-display •••
-
-      .checkout-form-container.glass-card
-        h2.section-title Secure Checkout
-        p.section-subtitle Enter your payment details to test the integration.
-        
-        form#checkout-form
-          .form-group(style="background: rgba(0,0,0,0.25); border: 1px dashed rgba(16,185,129,0.3); border-radius: 10px; padding: 15px; margin-bottom: 25px;")
-            h3(style="font-family: var(--font-heading); color: var(--color-gold); font-size: 1.1rem; margin-bottom: 12px; text-shadow: 0 0 5px rgba(251,191,36,0.2)") Order Details
-            .form-row
-              .form-group.half-width(style="margin-bottom: 0;")
-                label.input-label(for="package-select") Tribute Package
-                select.input-text#package-select(style="padding: 10px 15px; font-size: 0.95rem; background: rgba(5, 12, 9, 0.9); cursor: pointer;")
-                  option(value="apprentice", data-price="5.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ_apprentice") Apprentice Pass — $5.00
-                  option(value="master", data-price="15.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ" selected) Master Consultation — $15.00
-                  option(value="archmage", data-price="50.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ_archmage") Archmage VIP — $50.00
-              .form-group.half-width(style="margin-bottom: 0;")
-                label.input-label(for="quantity") Quantity
-                input.input-text#quantity(type="number", min="1", max="10", value="1", style="padding: 10px 15px; font-size: 0.95rem; background: rgba(5, 12, 9, 0.9);")
-          .form-group
-            label.input-label(for="card-name") Cardholder Name
-            input.input-text(type="text", id="card-name", placeholder="e.g. Adolfo Martinez", required)
+    .checkout-form-container.glass-card
+      h2.section-title Tavern Tribute Selection
+      p.section-subtitle Choose your package and quantity to request an audience with the Game Master.
+      
+      form#checkout-form
+        .form-group(style="margin-bottom: 25px;")
+          label.input-label(for="package-select") Tribute Package
+          select.input-text#package-select(style="cursor: pointer; background: rgba(5, 12, 9, 0.9);")
+            option(value="apprentice", data-price="5.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ_apprentice") Apprentice Pass — $5.00
+            option(value="master", data-price="15.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ" selected) Master Consultation — $15.00
+            option(value="archmage", data-price="50.00", data-price-id="price_1TlG8mHOAmfdroOCyiElxlIQ_archmage") Archmage VIP — $50.00
             
-          .form-group
-            label.input-label(for="card-number") Card Number
-            input.input-text(type="text", id="card-number", placeholder="4111 1111 1111 1111", maxlength="19", required)
+        .form-group(style="margin-bottom: 30px;")
+          label.input-label(for="quantity") Quantity (Scrolls of Wisdom)
+          input.input-text#quantity(type="number", min="1", max="10", value="1", style="background: rgba(5, 12, 9, 0.9);")
             
-          .form-row
-            .form-group.half-width
-              label.input-label(for="card-expiry") Expiry Date
-              input.input-text(type="text", id="card-expiry", placeholder="MM/YY", maxlength="5", required)
-            .form-group.half-width
-              label.input-label(for="card-cvv") CVV
-              input.input-text(type="password", id="card-cvv", placeholder="•••", maxlength="4", required)
-              
-          button.btn.btn-emerald.btn-block(type="submit", id="btn-submit-payment")
-            span Process Payment
-            i.btn-icon &rarr;
+        button.btn.btn-emerald.btn-block(type="submit", id="btn-submit-payment")
+          span Proceed to Checkout — $15.00
+          i.btn-icon &rarr;
 
     .response-section.glass-card(style="display: none;")
       .response-header
@@ -79,54 +39,9 @@ block content
 
   script.
     document.addEventListener('DOMContentLoaded', () => {
-      const cardNameInput = document.getElementById('card-name');
-      const cardNumberInput = document.getElementById('card-number');
-      const cardExpiryInput = document.getElementById('card-expiry');
-      const cardCvvInput = document.getElementById('card-cvv');
-      
-      const holderDisplay = document.querySelector('.holder-display');
-      const numberDisplayEl = document.querySelector('.card-number-display');
-      const expiryDisplay = document.querySelector('.expiry-display');
-      const cvvDisplay = document.querySelector('.cvv-display');
-      
       const packageSelect = document.getElementById('package-select');
       const quantityInput = document.getElementById('quantity');
       
-      // Live preview updates
-      cardNameInput.addEventListener('input', (e) => {
-        holderDisplay.textContent = e.target.value.toUpperCase() || 'CARDHOLDER NAME';
-      });
-      
-      cardNumberInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-        let formattedValue = '';
-        for (let i = 0; i < value.length; i++) {
-          if (i > 0 && i % 4 === 0) {
-            formattedValue += ' ';
-          }
-          formattedValue += value[i];
-        }
-        e.target.value = formattedValue;
-        numberDisplayEl.textContent = formattedValue || '•••• •••• •••• ••••';
-      });
-      
-      cardExpiryInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-        if (value.length > 2) {
-          e.target.value = value.slice(0, 2) + '/' + value.slice(2, 4);
-        } else {
-          e.target.value = value;
-        }
-        expiryDisplay.textContent = e.target.value || 'MM/YY';
-      });
-      
-      cardCvvInput.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/[^0-9]/g, '');
-        e.target.value = value;
-        cvvDisplay.textContent = '•'.repeat(value.length) || '•••';
-      });
-      
-      // Submit handling
       const form = document.getElementById('checkout-form');
       const responseSection = document.querySelector('.response-section');
       const statusIndicator = document.querySelector('.status-indicator');
@@ -140,23 +55,22 @@ block content
         const price = parseFloat(selectedOption.getAttribute('data-price'));
         const qty = parseInt(quantityInput.value) || 1;
         const total = (price * qty).toFixed(2);
-        submitBtn.querySelector('span').textContent = `Process Payment — $${total}`;
+        submitBtn.querySelector('span').textContent = `Proceed to Checkout — $${total}`;
       }
 
       packageSelect.addEventListener('change', updateTotal);
       quantityInput.addEventListener('input', updateTotal);
-      updateTotal();
       
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         // Show loading state
         submitBtn.disabled = true;
-        submitBtn.querySelector('span').textContent = 'Processing...';
+        submitBtn.querySelector('span').textContent = 'Generating Session...';
         
         responseSection.style.display = 'block';
         responseSection.scrollIntoView({ behavior: 'smooth' });
-        responseBodyCode.textContent = 'Sending request to server...';
+        responseBodyCode.textContent = 'Contacting Stripe to create checkout session...';
         statusTag.textContent = 'Status: Sending...';
         statusTag.className = 'meta-tag status-tag status-sending';
         
@@ -168,10 +82,6 @@ block content
               'Accept': 'application/json'
             },
             body: JSON.stringify({
-              cardholderName: cardNameInput.value,
-              cardNumber: cardNumberInput.value.replace(/\s/g, ''),
-              expiry: cardExpiryInput.value,
-              cvv: cardCvvInput.value,
               package: packageSelect.value,
               priceId: packageSelect.options[packageSelect.selectedIndex].getAttribute('data-price-id'),
               quantity: parseInt(quantityInput.value) || 1
