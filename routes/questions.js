@@ -11,9 +11,9 @@ var router = express.Router();
 dotenv.config();
 
 const ai = new GoogleGenAI({
-  vertexai: true,
-  project: process.env.GOOGLE_CLOUD_PROJECT,
-  location: process.env.GOOGLE_CLOUD_LOCATION,
+  // vertexai: true,
+  // project: process.env.GOOGLE_CLOUD_PROJECT,
+  // location: process.env.GOOGLE_CLOUD_LOCATION,
 });
 
 function formatMarkdown(text) {
@@ -81,7 +81,7 @@ async function getAnswer(game, question) {
     console.log(`📚 Loaded ${embeddings.length} embeddings for ${game}`);
 
     const questionResponse = await ai.models.embedContent({
-      model: "text-embedding-004",
+      model: "gemini-embedding-2",
       contents: question,
     });
 
@@ -132,7 +132,7 @@ Question: ${question}
 Answer:`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.8-flash",
       contents: prompt,
     });
 
@@ -185,7 +185,7 @@ async function createEmbeddings(game) {
       console.log(`🔄 Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(chunks.length / BATCH_SIZE)} (${batchChunks.length} chunks)`);
 
       const response = await ai.models.embedContent({
-        model: "text-embedding-004",
+        model: "gemini-embedding-001",
         contents: batchChunks,
       });
 
