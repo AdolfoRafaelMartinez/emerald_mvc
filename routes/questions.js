@@ -14,7 +14,7 @@ dotenv.config();
 //   apiKey: process.env.API_KEY,
 // });
 
-const { GoogleAuth } = require('google-auth-library');
+import { GoogleAuth } from 'google-auth-library';
 
 const auth = new GoogleAuth({
   scopes: [
