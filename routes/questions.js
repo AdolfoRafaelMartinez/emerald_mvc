@@ -10,9 +10,19 @@ var router = express.Router();
 
 dotenv.config();
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.API_KEY,
+// const ai = new GoogleGenAI({
+//   apiKey: process.env.API_KEY,
+// });
+
+const { GoogleAuth } = require('google-auth-library');
+
+const auth = new GoogleAuth({
+  scopes: [
+    'https://www.googleapis.com/auth/generative-language',
+    'https://www.googleapis.com/auth/cloud-platform'
+  ]
 });
+
 
 function formatMarkdown(text) {
   // Convert basic markdown to HTML
