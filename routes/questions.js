@@ -10,9 +10,9 @@ var router = express.Router();
 
 dotenv.config();
 
-// const ai = new GoogleGenAI({
-//   apiKey: process.env.API_KEY,
-// });
+const ai = new GoogleGenAI({
+  // apiKey: process.env.API_KEY,
+});
 
 import { GoogleAuth } from 'google-auth-library';
 
