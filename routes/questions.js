@@ -11,7 +11,9 @@ var router = express.Router();
 dotenv.config();
 
 const ai = new GoogleGenAI({
-  // apiKey: process.env.API_KEY,
+  vertexai: true,
+  project: process.env.GOOGLE_CLOUD_PROJECT || 'emerald-497222',
+  location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1'
 });
 
 import { GoogleAuth } from 'google-auth-library';
