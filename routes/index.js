@@ -39,7 +39,15 @@ router.get('/schwab', function (req, res, next) {
 });
 
 router.get('/checkout', function (req, res, next) {
-  res.render('checkout');
+  res.render('billing');
+});
+
+router.get('/billing', function (req, res, next) {
+  res.render('billing');
+});
+
+router.get('/setup-billing', function (req, res, next) {
+  res.render('billing');
 });
 
 router.post('/create-checkout-session', async (req, res, next) => {

@@ -1,0 +1,151 @@
+extends layout
+
+block content
+  .checkout-container(style="max-width: 600px; margin: 0 auto; width: 100%;")
+    .back-nav
+      a.btn.btn-secondary(href='/') &larr; Back to Tavern
+
+    .checkout-form-container.glass-card
+      h2.section-title Setup Billing &amp; Payment
+      p.section-subtitle Enter your credit card details and select a package to prepare for premium consultations.
+      
+      form#checkout-form
+        .form-group(style="margin-bottom: 25px;")
+          label.input-label(for="package-select") Tribute Package
+          select.input-text#package-select(style="cursor: pointer; background: rgba(5, 12, 9, 0.9);")
+            option(value="apprentice", data-price="1.00", data-price-id="price_1TlJesHOAmfdroOCxUtlpILF") Apprentice Pass — $1.00
+            option(value="master", data-price="2.00", data-price-id="price_1TlJesHOAmfdroOCxUtlpILF" selected) Master Consultation — $2.00
+            option(value="archmage", data-price="3.00", data-price-id="price_1TlJesHOAmfdroOCxUtlpILF") Archmage VIP — $3.00
+            
+        .form-group(style="margin-bottom: 30px;")
+          label.input-label(for="quantity") Quantity (Scrolls of Wisdom)
+          input.input-text#quantity(type="number", min="1", max="10", value="1", style="background: rgba(5, 12, 9, 0.9);")
+            
+        button.btn.btn-emerald.btn-block(type="submit", id="btn-submit-payment")
+          span Proceed to Checkout — $2.00
+          i.btn-icon &rarr;
+
+    .response-section.glass-card(style="display: none;")
+      .response-header
+        span.status-indicator
+        h3.response-title Server Response
+      .response-meta
+        span.meta-tag.method-tag POST
+        span.meta-tag.url-tag /create-checkout-session
+        span.meta-tag.status-tag Status: --
+      .response-body-container
+        pre.response-body-pre
+          code.response-body-code Waiting for request...
+
+  script.
+    document.addEventListener('DOMContentLoaded', () => {
+      const packageSelect = document.getElementById('package-select');
+      const quantityInput = document.getElementById('quantity');
+      
+      const form = document.getElementById('checkout-form');
+      const responseSection = document.querySelector('.response-section');
+      const statusIndicator = document.querySelector('.status-indicator');
+      const statusTag = document.querySelector('.status-tag');
+      const responseBodyCode = document.querySelector('.response-body-code');
+      const submitBtn = document.getElementById('btn-submit-payment');
+      
+      // Dynamic total calculation
+      function updateTotal() {
+        const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+        const price = parseFloat(selectedOption.getAttribute('data-price'));
+        const qty = parseInt(quantityInput.value) || 1;
+        const total = (price * qty).toFixed(2);
+        submitBtn.querySelector('span').textContent = `Proceed to Checkout — $${total}`;
+      }
+
+      packageSelect.addEventListener('change', updateTotal);
+      quantityInput.addEventListener('input', updateTotal);
+      
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').textContent = 'Generating Session...';
+        
+        responseSection.style.display = 'block';
+        responseSection.scrollIntoView({ behavior: 'smooth' });
+        responseBodyCode.textContent = 'Contacting Stripe to create checkout session...';
+        statusTag.textContent = 'Status: Sending...';
+        statusTag.className = 'meta-tag status-tag status-sending';
+        
+        try {
+          const response = await fetch('/create-checkout-session', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              package: packageSelect.value,
+              priceId: packageSelect.options[packageSelect.selectedIndex].getAttribute('data-price-id'),
+              quantity: parseInt(quantityInput.value) || 1
+            })
+          });
+          
+          statusTag.textContent = `Status: ${response.status} ${response.statusText}`;
+          
+          if (response.status >= 200 && response.status < 400) {
+            statusIndicator.className = 'status-indicator status-success';
+            statusTag.className = 'meta-tag status-tag status-success';
+            
+            let redirectUrl = '';
+            let displayContent = `Status Code: ${response.status}\n`;
+            
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              const data = await response.json();
+              redirectUrl = data.url;
+              displayContent += `Response: JSON URL generated successfully.\n`;
+            } else {
+              const text = await response.text();
+              redirectUrl = response.url;
+              displayContent += `Redirected: ${response.redirected ? 'Yes' : 'No'}\n`;
+            }
+            
+            displayContent += `URL: ${redirectUrl}\n\n`;
+            
+            if (redirectUrl && redirectUrl !== window.location.href) {
+              displayContent += `Stripe Checkout URL Generated successfully!\nDestination: ${redirectUrl}\n\n`;
+              displayContent += `Redirecting to Stripe Checkout in 1.5 seconds...\n`;
+              responseBodyCode.textContent = displayContent;
+              
+              setTimeout(() => {
+                window.location.href = redirectUrl;
+              }, 1500);
+            } else {
+              responseBodyCode.textContent = displayContent;
+              submitBtn.disabled = false;
+              updateTotal();
+            }
+          } else {
+            statusIndicator.className = 'status-indicator status-error';
+            statusTag.className = 'meta-tag status-tag status-error';
+            
+            const text = await response.text();
+            let parsedText = text;
+            
+            const match = text.match(/<pre>([\s\S]*?)<\/pre>/i) || text.match(/<h1>([\s\S]*?)<\/h1>/i);
+            if (match) {
+              parsedText = match[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+            }
+            
+            responseBodyCode.textContent = `Error Code: ${response.status}\n\nServer Error details:\n${parsedText.trim()}`;
+            submitBtn.disabled = false;
+            updateTotal();
+          }
+        } catch (err) {
+          statusIndicator.className = 'status-indicator status-error';
+          statusTag.textContent = 'Status: Network Error';
+          statusTag.className = 'meta-tag status-tag status-error';
+          responseBodyCode.textContent = `Network / Connection Error:\n${err.message}`;
+          submitBtn.disabled = false;
+          updateTotal();
+        }
+      });
+    });
