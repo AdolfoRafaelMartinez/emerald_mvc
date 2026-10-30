@@ -6,11 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
 
-const ai = new GoogleGenAI({
-  vertexai: true,
-  project: process.env.GOOGLE_CLOUD_PROJECT,
-  location: process.env.GOOGLE_CLOUD_LOCATION,
-});
+const ai = new GoogleGenAI({});
 
 async function createEmbeddings(game) {
   try {
@@ -22,7 +18,7 @@ async function createEmbeddings(game) {
 
     let text_data = "";
     const files = fs.readdirSync(gameDir);
-    
+
     // Find source files
     const pdfFile = files.find(f => f.toLowerCase().endsWith('.pdf'));
     if (pdfFile) {
@@ -42,7 +38,7 @@ async function createEmbeddings(game) {
         return;
       }
     }
-    
+
     console.log(`📄 [${game}] Extracted ${text_data.length} characters from source`);
     const chunks = [];
     const chunkSize = 1000;
@@ -50,19 +46,19 @@ async function createEmbeddings(game) {
       chunks.push(text_data.slice(i, i + chunkSize));
     }
     console.log(`📝 [${game}] Created ${chunks.length} text chunks`);
-    
+
     const embeddings = [];
     const BATCH_SIZE = 50;
-    
+
     for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
       const batchChunks = chunks.slice(i, i + BATCH_SIZE);
       console.log(`🔄 [${game}] Processing batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(chunks.length / BATCH_SIZE)} (${batchChunks.length} chunks)`);
-      
+
       const response = await ai.models.embedContent({
         model: "text-embedding-004",
         contents: batchChunks,
       });
-      
+
       batchChunks.forEach((chunkText, idx) => {
         if (response.embeddings && response.embeddings[idx]) {
           embeddings.push({
@@ -71,10 +67,10 @@ async function createEmbeddings(game) {
           });
         }
       });
-      
+
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
-    
+
     const outputPath = path.join(gameDir, 'embeddings.json');
     fs.writeFileSync(outputPath, JSON.stringify(embeddings, null, 2));
     console.log(`✅ [${game}] Embeddings successfully created and saved to ${outputPath}`);
@@ -105,7 +101,7 @@ async function run() {
   }
 
   console.log(`🔮 Starting embeddings generation for: ${games.join(', ')}`);
-  
+
   for (const game of games) {
     console.log(`\n----------------------------------------\n🚀 Processing game: ${game}`);
     try {
@@ -114,7 +110,7 @@ async function run() {
       console.error(`❌ Failed to generate embeddings for ${game}:`, e.message);
     }
   }
-  
+
   console.log("\n✨ Embeddings generation script complete.");
 }
 

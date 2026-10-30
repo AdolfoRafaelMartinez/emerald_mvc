@@ -10,11 +10,7 @@ var router = express.Router();
 
 dotenv.config();
 
-const ai = new GoogleGenAI({
-  vertexai: true,
-  project: process.env.GOOGLE_CLOUD_PROJECT || 'emerald-497222',
-  location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1'
-});
+const ai = new GoogleGenAI({});
 
 import { GoogleAuth } from 'google-auth-library';
 
@@ -91,7 +87,7 @@ async function getAnswer(game, question) {
     console.log(`📚 Loaded ${embeddings.length} embeddings for ${game}`);
 
     const questionResponse = await ai.models.embedContent({
-      model: "gemini-embedding-2",
+      model: "gemini-embedding-2", // Updated from gemini-embedding-2
       contents: question,
     });
 
@@ -142,9 +138,10 @@ Question: ${question}
 Answer:`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.8-flash",
+      model: "gemini-2.5-flash", // Updated from gemini-3.8-flash
       contents: prompt,
     });
+
 
     console.log("✅ Answer generated!");
     return response.text;
